@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ethan Yang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="fonts.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      /* --white: #f2efe8; */
+      --white: #ffffff;
+      --red: #d10000;
+      --gray: #c8c4bc;
+      --mid: #7a7570;
+      --border: 2px solid #0a0a0a;
+      --sidebar-w: 300px;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      /* font-family: 'Space Mono', monospace; */
+      font-family: 'Noto Sans JP';
+      /* font-family: 'Monument Grotesk'; */
+      background: var(--white);
+      color: var(--black);
+      font-size: 13px;
+      line-height: 1.6;
+      overflow: hidden;
+    }
+
+    body.jp{ font-family: 'Noto Sans JP', sans-serif; }
+
+    /* ── Top bar ── */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 44px;
+      background: var(--white);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      z-index: 100;
+      border-bottom: var(--border);
+      gap: 1.5rem;
+    }
+
+    .topbar-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--black);
+      text-box-trim: trim-end;
+    }
+
+    /* Spacer pushes jp-btn to right */
+    .topbar-spacer { flex: 1; }
+
+    /* ── Japan flag button ── */
+    .jp-btn {
+      width: 32px;
+      height: 22px;
+      background: #fff;
+      border: 1.5px solid rgba(255,255,255,0.35);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+      transition: width 0.3s cubic-bezier(0.4,0,0.2,1),
+                  height 0.3s cubic-bezier(0.4,0,0.2,1),
+                  border-color 0.2s,
+                  box-shadow 0.2s;
+    }
+
+    /* Default state: just the red circle, white bg */
+    .jp-btn .flag-white-top,
+    .jp-btn .flag-white-bot { display: none; }
+
+    /* On hover: expand to proper flag proportions, show stripes */
+    .jp-btn:hover {
+      width: 48px;
+      height: 32px;
+      border-color: rgba(255,255,255,0.7);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
+    }
+
+    .jp-btn .circle {
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: var(--red);
+      pointer-events: none;
+      transition: width 0.3s, height 0.3s;
+      position: relative;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    .jp-btn:hover .circle {
+      width: 14px;
+      height: 14px;
+    }
+
+    .jp-btn:active { opacity: 0.8; transform: scale(0.95); }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      height: calc(100vh - 44px);
+      margin-top: 44px;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      height: calc(100vh - 44px);
+      overflow-y: auto;
+      border-right: var(--border);
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar::-webkit-scrollbar { width: 0; }
+
+    .sidebar-block {
+      border-bottom: var(--border);
+      padding: 1.25rem 1.75rem;
+      flex-shrink: 0;
+    }
+    .sidebar-block:last-child { border-bottom: none; }
+
+    .block-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Headshot */
+    .headshot-wrap {
+      width: 100%;
+      aspect-ratio: 1;
+      border: var(--border);
+      overflow: hidden;
+      background: #d0ccc4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .headshot-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .headshot-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--mid);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      width: 100%; height: 100%;
+    }
+    .headshot-placeholder svg { opacity: 0.35; }
+
+    .profile-name {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.15;
+      text-transform: upperclase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+    .profile-role { font-size: 11px; color: var(--black); letter-spacing: 0.05em; }
+
+    #abes-group-role { display: flex; align-items: center; gap: 5px; line-height: 1px; }
+    #labcat-icon { height: 2.0em; width: auto; display: inline-block; }
+    @keyframes barrel-roll {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    #abes-group-role:hover #labcat-icon {
+      animation: barrel-roll 0.6s linear infinite;
+    }
+
+    /* Cornell affiliation line */
+    .profile-affil {
+      font-size: 11px;
+      color: var(--black);
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Cornell text triggers hover, not the box icon */
+    .cornell-trigger {
+      cursor: default;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── Cornell Box SVG icon ── */
+    .cornell-box-wrap {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--black);
+      padding: 5px 0;
+      text-transform: lowercase;
+      letter-spacing: 0.1em;
+      transition: color 0.1s;
+      cursor: pointer;
+      background: none;
+      border: none;
+      width: 100%;
+      font-family: inherit;
+    }
+    nav a::before { content: '-'; opacity: 0; transition: opacity 0.1s; font-size: 11px; }
+    nav a:hover::before, nav a.active::before { opacity: 1; }
+    nav a.active { color: var(--red); }
+    nav a:hover { color: var(--red); }
+
+    .contact-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--gray);
+      font-size: 11px;
+    }
+    .contact-item:last-child { border-bottom: none; }
+    .contact-item .label { color: var(--mid); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 10px; }
+    .contact-item a { color: var(--black); text-decoration: none; }
+    .contact-item a:hover { color: var(--red); }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-size: 10px; font-weight: 700;
+      padding: 2px 7px;
+      border: 2px solid var(--black);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      background: transparent;
+      transition: background 0.1s, color 0.1s;
+      cursor: default;
+    }
+    .tag:hover { background: var(--black); color: var(--white); }
+
+    /* ── Main content ── */
+    .main {
+      height: calc(100vh - 44px);
+      overflow-y: auto;
+      background: var(--white);
+      position: relative;
+    }
+    .main::-webkit-scrollbar { width: 0; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .section-header {
+      border-bottom: var(--border);
+      padding: 1.25rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--white);
+      z-index: 10;
+    }
+    .section-header h1 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+    .section-note {
+      font-size: 10px;
+      color: var(--mid);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Publications filter toggle ── */
+    .pub-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pub-toggle-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+    .toggle-track {
+      width: 36px;
+      height: 18px;
+      background: var(--gray);
+      border: 2px solid var(--black);
+      border-radius: 0;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-track.on { background: var(--black); }
+    .toggle-thumb {
+      position: absolute;
+      top: 1px;
+      left: 1px;
+      width: 12px;
+      height: 12px;
+      background: var(--white);
+      border: 1.5px solid var(--black);
+      transition: left 0.2s cubic-bezier(0.4,0,0.2,1);
+    }
+    .toggle-track.on .toggle-thumb { left: 19px; }
+
+    .year-strip {
+      display: flex;
+      align-items: center;
+      padding: 0.55rem 2.5rem;
+      border-bottom: 1px solid var(--gray);
+      background: var(--black);
+      color: var(--white);
+    }
+    .year-strip span { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-box-trim: trim-end;  }
+
+    /* Paper rows */
+    .paper {
+      border-bottom: var(--border);
+      padding: 1.25rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      transition: background 0.15s;
+    }
+    .paper:hover { background: #eceae2; }
+    .paper.hidden { display: none; }
+
+    .paper-img-placeholder {
+      position: absolute;
+      left: 0; top: 0;
+      height: 100%; width: 160px;
+      transform: translateX(-100%);
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 2;
+      border-right: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+    }
+    .paper:hover .paper-img-placeholder { transform: translateX(0); }
+
+    .paper-content {
+      position: relative;
+      z-index: 1;
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .paper:hover .paper-content { transform: translateX(170px); }
+
+    .paper-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-box-trim: trim-end;
+    }
+    .venue-badge {
+      display: inline-block;
+      font-size: 9px; font-weight: 700;
+      padding: 1px 6px;
+      background: var(--red); color: #fff;
+      letter-spacing: 0.1em;
+      margin-left: 8px;
+      vertical-align: middle;
+      text-transform: uppercase;
+      /* text-box-trim: trim-end; */
+    }
+    .paper-authors { font-size: 11px; color: var(--mid); margin-bottom: 3px; font-style: italic; text-box-trim: trim-both ex alphabetic;}
+    .paper-authors strong { color: var(--black); font-style: normal; }
+    .paper-venue-full { font-size: 10px; color: var(--mid); margin-bottom: 10px; letter-spacing: 0.03em; text-box-trim: trim-end;}
+    .paper-links { display: flex; gap: 6px; flex-wrap: wrap; }
+    .paper-link {
+      font-size: 10px; font-weight: 700;
+      padding: 3px 10px;
+      border: 2px solid var(--black);
+      color: var(--black);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: transparent;
+      transition: background 0.1s, color 0.1s;
+    }
+    .paper-link:hover { background: var(--black); color: var(--white); }
+
+    /* Year group: hide strip when all papers in it are hidden */
+    .year-group.all-hidden { display: none; }
+
+    /* About / Teaching views */
+    .text-section { padding: 2rem 2.5rem; max-width: 660px; }
+    .text-section p { font-size: 12px; line-height: 1.95; color: var(--black); margin-bottom: 1rem; }
+    .text-section p:last-child { margin-bottom: 0; }
+
+    .teach-row {
+      border: var(--border);
+      padding: 1rem 1.25rem;
+      margin-bottom: 8px;
+    }
+    .teach-row .course { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .teach-row .role { font-size: 11px; color: var(--mid); margin-top: 2px; }
+
+    .site-footer {
+      border-top: var(--border);
+      padding: 1.25rem 2.5rem;
+      font-size: 10px; color: var(--mid);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .c1 { background: #0a0a0a; color: #f2efe8; }
+    .c2 { background: #d10000; color: #f2efe8; }
+    .c3 { background: #3a3a3a; color: #f2efe8; }
+    .c4 { background: #5a5050; color: #f2efe8; }
+    .c5 { background: #1a1a5a; color: #f2efe8; }
+
+    /* ── About page layout ── */
+    .about-body {
+      display: flex;
+      align-items: flex-start;
+    }
+    .about-headshot {
+      flex-shrink: 0;
+      width: 240px;
+      height: 240px;
+      overflow: hidden;
+      border-right: var(--border);
+      border-bottom: var(--border);
+      cursor: crosshair;
+    }
+    #headshot-canvas { display: block; width: 240px; height: 240px; }
+    .about-body .text-section { flex: 1; }
+
+    @media (max-width: 700px) {
+      body { overflow: auto; }
+      .layout { grid-template-columns: 1fr; height: auto; }
+      .sidebar { height: auto; }
+      .main { height: auto; overflow: visible; }
+      .about-body { flex-direction: column; }
+      .about-headshot { width: 100%; height: auto; border-right: none; border-bottom: var(--border); }
+      #headshot-canvas { width: 100%; height: auto; }
+    }
+
+    /* ── Dark mode ── */
+    body.dark {
+      --white: #111111;
+      --black: #e8e4dc;
+      --gray: #252525;
+      --mid: #777777;
+      --border: 2px solid #e8e4dc;
+    }
+    body.dark .paper:hover { background: #1c1c1c; }
+
+    /* ── Pixar lamp dark-mode toggle ── */
+    .lamp-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+      flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+    .lamp-btn:hover { opacity: 0.6; }
+    .lamp-btn:active { transform: scale(0.88); }
+    .lamp-svg { display: block; overflow: visible; }
+
+    /* Day mode: head rotated so opening faces left (lamp "looking at user") */
+    /* Dark mode: head rotated so opening faces down (lamp "shining down") */
+    /* Day mode: circle face visible, cone hidden */
+    .lamp-face { transition: opacity 0.35s; }
+    body.dark .lamp-face { opacity: 0; pointer-events: none; }
+
+    /* Dark mode: cone springs down, face hidden */
+    .lamp-head-group {
+      transform-origin: 19px 6px;
+      transform: rotate(90deg);
+      opacity: 0;
+      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+    }
+    body.dark .lamp-head-group { transform: rotate(0deg); opacity: 1; }
+
+    .lamp-beam {
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    body.dark .lamp-beam { opacity: 0.3; }
+
+    .lamp-bulb { transition: fill 0.3s; }
+    body.dark .lamp-bulb { fill: #ffe080; }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="topbar-name" data-en="Ethan Yang" data-jp="イーサン・ヤン">Ethan Yang</span>
+  <div class="topbar-spacer"></div>
+  <button class="lamp-btn" id="dark-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+    <svg class="lamp-svg" viewBox="0 0 30 36" width="20" height="24">
+      <!-- Light beam (visible in dark mode) -->
+      <polygon class="lamp-beam" fill="#ffe080" points="12.5,16 25.5,16 29,34 9,34"/>
+      <!-- Base plate -->
+      <rect x="4" y="29" width="22" height="4" rx="1" fill="currentColor"/>
+      <!-- Base rod -->
+      <rect x="13" y="22" width="4" height="8" fill="currentColor"/>
+      <!-- Lower arm hinge -->
+      <circle cx="15" cy="22" r="2.5" fill="currentColor"/>
+      <!-- Lower arm -->
+      <line x1="15" y1="22" x2="7" y2="14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <!-- Upper arm hinge -->
+      <circle cx="7" cy="14" r="2.5" fill="currentColor"/>
+      <!-- Upper arm -->
+      <line x1="7" y1="14" x2="19" y2="6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <!-- Head: face (day mode — circular opening facing viewer) -->
+      <g class="lamp-face">
+        <circle cx="19" cy="6" r="7" stroke="currentColor" stroke-width="2.5" fill="currentColor"/>
+        <circle cx="19" cy="6" r="2.5" fill="currentColor"/>
+        <circle cx="19" cy="6" r="3" fill="white"/>
+      </g>
+      <!-- Head: cone (dark mode — springs down to shine) -->
+      <g class="lamp-head-group">
+        <polygon points="15,6 23,6 25.5,16 12.5,16" fill="currentColor"/>
+        <circle cx="19" cy="6" r="3" fill="currentColor"/>
+        <circle class="lamp-bulb" cx="19" cy="12" r="2.5" fill="currentColor"/>
+      </g>
+    </svg>
+  </button>
+  <button class="jp-btn" id="jp-toggle" title="Switch to Japanese / 日本語" aria-label="Toggle Japanese">
+    <div class="circle"></div>
+  </button>
+</header>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+
+    <div class="sidebar-block">
+      <div class="profile-role" data-en="3rd Year CS PhD Candidate" data-jp="博士課程 · 情報科学">3rd Year CS PhD Candidate</div>
+      <div class="profile-affil">
+        <!-- Hovering over the entire row (text + box) toggles the light -->
+        <span class="cornell-trigger" id="cornell-trigger">
+          <span data-en="Cornell University" data-jp="コーネル大学">Cornell University</span>
+          <span class="cornell-box-wrap" id="cb-wrap">
+            <svg id="cornell-box-svg" width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+              <polygon id="cb-back" points="4,2 18,2 18,17 4,17" fill="#e8e4dc" stroke="#0a0a0a" stroke-width="1.2"/>
+              <polygon points="1,1 4,2 4,17 1,18" fill="#b01010" stroke="#0a0a0a" stroke-width="1"/>
+              <polygon points="18,2 21,1 21,18 18,17" fill="#1a6b1a" stroke="#0a0a0a" stroke-width="1"/>
+              <polygon points="1,18 21,18 18,17 4,17" fill="#ccc8c0" stroke="#0a0a0a" stroke-width="1"/>
+              <polygon points="1,1 21,1 18,2 4,2" fill="#ccc8c0" stroke="#0a0a0a" stroke-width="1"/>
+              <rect id="cb-light-hole" x="8.5" y="2.2" width="5" height="2.2" fill="#0a0a0a"/>
+              <polygon id="cb-beam" points="9,4.4 13,4.4 15,17 7,17" fill="rgba(255,240,160,0.18)" display="none"/>
+              <rect id="cb-glow" x="8.5" y="2.2" width="5" height="2.2" fill="#ffe080" display="none"/>
+              <!-- Tall box -->
+              <rect x="11.5" y="9" width="5" height="8" fill="#dedad2" stroke="#0a0a0a" stroke-width="0.5"/>
+              <polygon points="11.5,9 16.5,9 17.5,7.5 12.5,7.5" fill="#c8c4bc" stroke="#0a0a0a" stroke-width="0.5"/>
+              <polygon points="16.5,9 17.5,7.5 17.5,15.5 16.5,17" fill="#b4b0a8" stroke="#0a0a0a" stroke-width="0.5"/>
+              <!-- Short box -->
+              <rect x="5" y="12.5" width="5" height="4.5" fill="#dedad2" stroke="#0a0a0a" stroke-width="0.5"/>
+              <polygon points="5,12.5 10,12.5 11,11 6,11" fill="#c8c4bc" stroke="#0a0a0a" stroke-width="0.5"/>
+              <polygon points="10,12.5 11,11 11,15.5 10,17" fill="#b4b0a8" stroke="#0a0a0a" stroke-width="0.5"/>
+            </svg>
+          </span>
+        </span>
+      </div>
+      <div class="profile-role" id="abes-group-role">
+        <span data-en="Abe's Group">Abe's Group</span><img src="imgs/labcat.png" id="labcat-icon" alt="lab cat" />
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="sidebar-block">
+      <!-- <div class="block-label" data-en="Navigation" data-jp="ナビ">Navigation</div> -->
+      <nav>
+        <a class="nav-link active" data-view="papers" data-en="Papers" data-jp="論文">Papers</a>
+        <a class="nav-link" data-view="about" data-en="About" data-jp="自己紹介">About</a>
+        <a href="cv.pdf" data-en="CV" data-jp="履歴書">CV</a>
+        <!-- <a class="nav-link" data-view="teaching" data-en="Teaching" data-jp="教育">Teaching</a> -->
+      </nav>
+    </div>
+
+  </aside>
+
+  <!-- ── Main pane ── -->
+  <main class="main" id="main-pane">
+
+    <!-- PUBLICATIONS VIEW -->
+    <div class="view active" id="view-papers">
+      <div class="section-header">
+        <h1 data-en="Papers" data-jp="論文一覧">Papers</h1>
+        <div style="display:flex;align-items:center;gap:1.5rem;">
+          <span class="section-note" data-en="* equal contribution" data-jp="* 同等貢献">* equal contribution</span>
+          <!-- Selected / All toggle -->
+          <div class="pub-toggle">
+            <span class="pub-toggle-label" data-en="Selected" data-jp="厳選">Selected</span>
+            <div class="toggle-track" id="pub-toggle-track" role="switch" aria-checked="false" tabindex="0">
+              <div class="toggle-thumb"></div>
+            </div>
+            <span class="pub-toggle-label" data-en="All" data-jp="全て">All</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2025 -->
+      <div class="year-group" data-year="2025">
+        <div class="year-strip"><span>2025</span></div>
+
+        <div class="paper" data-selected="false">
+          <div class="paper-img-placeholder c1"><span>Fig. 1</span></div>
+          <div class="paper-content">
+            <div class="paper-title">
+              ARticulate: Interactive Visual Guidance for Demonstrated Rotational Degrees of Freedom in Mobile AR
+              <span class="venue-badge">CHI</span>
+            </div>
+            <div class="paper-authors">Nhan Tran, <strong>Ethan Yang</strong>, Abe Davis</div>
+            <div class="paper-venue-full">Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems</div>
+            <!-- <div class="paper-links">
+              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
+              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
+              <a class="paper-link" href="#" data-en="arXiv" data-jp="arXiv">arXiv</a>
+              <a class="paper-link" href="#" data-en="Slides" data-jp="スライド">Slides</a>
+            </div> -->
+          </div>
+        </div>
+
+        <div class="paper" data-selected="false">
+          <div class="paper-img-placeholder c1"><span>Fig. 1</span></div>
+          <div class="paper-content">
+            <div class="paper-title">
+              Million Eyes on the “Robot Umps”: The Case for Studying Sports in HRI Through Baseball
+              <span class="venue-badge">HRI</span>
+            </div>
+            <div class="paper-authors">Waki Kamino, Andrea W Wen-Yi, Dhruv Agarwal, Sil Hamilton, Eun Jeong Kang, Jieun Kim, Keigo Kusumegi, Pegah Moradi, Daniel Mwesigwa, Yan Tao, I-Ting Tsai, <strong>Ethan Yang</strong>, Shengqi Zhu, Shu-Jung Han, Chi-Jung Lee, Michael Joseph Sack, Tianhong Catherine Yu, Weslie Khoo, Andy Elliot Ricci, Yoyo Tsung-Yu Hou, Boyoung Kim, Selma Šabanović, David J Crandall, Karen Levy, Malte F Jung</div>
+            <div class="paper-venue-full">2025 20th ACM/IEEE International Conference on Human-Robot Interaction (HRI)</div>
+            <!-- <div class="paper-links">
+              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
+              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
+              <a class="paper-link" href="#" data-en="arXiv" data-jp="arXiv">arXiv</a>
+              <a class="paper-link" href="#" data-en="Slides" data-jp="スライド">Slides</a>
+            </div> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 2024 -->
+      <div class="year-group" data-year="2024">
+        <div class="year-strip"><span>2024</span></div>
+
+        <div class="paper" data-selected="true">
+          <div class="paper-img-placeholder c1"><span>Fig. 1</span></div>
+          <div class="paper-content">
+            <div class="paper-title">
+              Filter-Guided Diffusion for Controllable Image Generation
+              <span class="venue-badge">SIGGRAPH</span>
+            </div>
+            <div class="paper-authors">Zeqi Gu*, <strong>Ethan Yang*</strong>, Abe Davis</div>
+            <div class="paper-venue-full">ACM SIGGRAPH 2024 conference papers</div>
+            <!-- <div class="paper-links">
+              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
+              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
+              <a class="paper-link" href="#" data-en="arXiv" data-jp="arXiv">arXiv</a>
+              <a class="paper-link" href="#" data-en="Slides" data-jp="スライド">Slides</a>
+            </div> -->
+          </div>
+        </div>
+
+        <div class="paper" data-selected="true">
+          <div class="paper-img-placeholder c2"><span>Fig. 2</span></div>
+          <div class="paper-content">
+            <div class="paper-title">
+              Personal Time-Lapse
+              <span class="venue-badge">UIST</span>
+            </div>
+            <div class="paper-authors">Nhan Tran, <strong>Ethan Yang</strong>, Angelique Taylor, Abe Davis</div>
+            <div class="paper-venue-full">Proceedings of the 37th Annual ACM Symposium on User Interface Software and Technology</div>
+            <!-- <div class="paper-links">
+              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
+              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
+              <a class="paper-link" href="#" data-en="Slides" data-jp="スライド">Slides</a>
+              <a class="paper-link" href="#" data-en="Poster" data-jp="ポスター">Poster</a>
+            </div> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 2023 -->
+      <div class="year-group" data-year="2023">
+        <div class="year-strip"><span>2023</span></div>
+
+        <div class="paper" data-selected="false">
+          <div class="paper-img-placeholder c5"><span>Fig. 5</span></div>
+          <div class="paper-content">
+            <div class="paper-title">
+              Enhancing diffusion models with 3d perspective geometry constraints
+              <span class="venue-badge">SIGGRAPH</span>
+            </div>
+            <div class="paper-authors">Rishi Upadhyay, Howard Zhang, Yunhao Ba, <strong>Ethan Yang</strong>, Blake Gella, Sicheng Jiang, Alex Wong, Achuta Kadambi</div>
+            <div class="paper-venue-full" >ACM Transactions on Graphics (TOG), 2023</div>
+            <!-- <div class="paper-links">
+              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
+            </div> -->
+          </div>
+        </div>
+
+        <div class="paper" data-selected="false">
+          <div class="paper-img-placeholder c5"><span>Fig. 5</span></div>
+          <div class="paper-content">
+            <div class="paper-title">
+              Weatherstream: Light transport automation of single image deweathering
+              <span class="venue-badge">CVPR</span>
+            </div>
+            <div class="paper-authors">Howard Zhang, Yunhao Ba, <strong>Ethan Yang</strong> Varan Mehra, Blake Gella, Akira Suzuki, Arnold Pfahnl, Chethan Chinder Chandrappa, Alex Wong, Achuta Kadambi</div>
+            <div class="paper-venue-full">Proceedings of the IEEE/CVF conference on computer vision and pattern recognition</div>
+            <!-- <div class="paper-links">
+              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
+            </div> -->
+          </div>
+        </div>
+
+        <div class="paper" data-selected="false">
+          <div class="paper-img-placeholder c4"><span>Fig. 4</span></div>
+          <div class="paper-content">
+            <div class="paper-title">
+              Rapid and stain-free quantification of viral plaque via lens-free holography and deep learning
+              <span class="venue-badge">Nature</span>
+            </div>
+            <div class="paper-authors">Tairan Liu, Yuzhu Li, Hatice Ceylan Koydemir, Yijie Zhang, <strong>Ethan Yang</strong>, Merve Eryilmaz, Hongda Wang, Jingxi Li, Bijie Bai, Guangdong Ma, Aydogan Ozcan</div>
+            <div class="paper-venue-full">Nature Biomedical Engineering, 2023</div>
+            <!-- <div class="paper-links">
+              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
+              <a class="paper-link" href="#" data-en="Poster" data-jp="ポスター">Poster</a>
+            </div> -->
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="year-group" data-year="2022">
+        <div class="year-strip"><span>2022</span></div>
+
+        <div class="paper" data-selected="true">
+          <div class="paper-img-placeholder c3"><span>Fig. 3</span></div>
+          <div class="paper-content">
+            <div class="paper-title">
+              Not just streaks: Towards ground truth for single image deraining
+              <span class="venue-badge">ECCV</span>
+            </div>
+            <div class="paper-authors">Yunhao Ba, Howard Zhang, <strong>Ethan Yang</strong>, Akira Suzuki, Arnold Pfahnl, Chethan Chinder Chandrappa, Celso M De Melo, Suya You, Stefano Soatto, Alex Wong, Achuta Kadambi</div>
+            <div class="paper-venue-full" >European Conference on Computer Vision, 2022</div>
+            <!-- <div class="paper-links">
+              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
+              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
+              <a class="paper-link" href="#" data-en="arXiv" data-jp="arXiv">arXiv</a>
+            </div> -->
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+
+    <!-- ABOUT VIEW -->
+    <div class="view" id="view-about">
+      <div class="section-header">
+        <h1 data-en="About" data-jp="自己紹介">About</h1>
+      </div>
+      <div class="about-body">
+        <div class="about-headshot">
+          <canvas id="headshot-canvas" width="240" height="240"></canvas>
+        </div>
+        <div class="text-section">
+          <p data-en="I'm a third year PhD student at Cornell advised by Abe Davis. I received my bachlor's from UCLA with a double major in computer engineering and math. My research focuses at the intersection of computer vision, graphics, and HCI."
+             data-jp="おちんぽ。">
+            I'm a third year PhD student at Cornell advised by Abe Davis. I received my bachlor's from UCLA with a double major in computer engineering and math. My research focuses at the intersection of computer vision, graphics, and HCI.
+          </p>
+          <p data-en="Outside of research, I play tennis and violin! I also like dogs. "
+             data-jp="博士課程入学前は、コーネル大学で数学と情報科学の学士号を取得しました。エグザンプルリサーチとエグザンプルAIでインターンを経験しています。">
+            Outside of research, I play tennis and violin! I also like dogs. Trying to learn Japanese very slowly...
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TEACHING VIEW -->
+    <div class="view" id="view-teaching">
+      <div class="section-header">
+        <h1 data-en="Teaching" data-jp="教育">Teaching</h1>
+      </div>
+      <div class="text-section">
+        <div class="teach-row">
+          <div class="course" data-en="CS 4820 — Natural Language Processing" data-jp="CS 4820 — 自然言語処理">CS 4820 — Natural Language Processing</div>
+          <div class="role" data-en="Teaching Assistant · Fall 2023, Spring 2024" data-jp="ティーチングアシスタント · 2023年秋学期、2024年春学期">Teaching Assistant · Fall 2023, Spring 2024</div>
+        </div>
+        <div class="teach-row">
+          <div class="course" data-en="CS 3780 — Introduction to Machine Learning" data-jp="CS 3780 — 機械学習入門">CS 3780 — Introduction to Machine Learning</div>
+          <div class="role" data-en="Teaching Assistant · Fall 2022" data-jp="ティーチングアシスタント · 2022年秋学期">Teaching Assistant · Fall 2022</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+/* ── SPA navigation ── */
+document.querySelectorAll('.nav-link[data-view]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const viewId = link.dataset.view;
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const target = document.getElementById('view-' + viewId);
+    if (target) { target.classList.add('active'); document.getElementById('main-pane').scrollTop = 0; }
+  });
+});
+
+/* ── Cornell Box — light on hover of the trigger span ── */
+const cbTrigger = document.getElementById('cornell-trigger');
+const cbBeam    = document.getElementById('cb-beam');
+const cbGlow    = document.getElementById('cb-glow');
+const cbBack    = document.getElementById('cb-back');
+const cbHole    = document.getElementById('cb-light-hole');
+
+function lightOn() {
+  cbBeam.setAttribute('display', 'inline');
+  cbGlow.setAttribute('display', 'inline');
+  cbBack.setAttribute('fill', '#ffffff');
+  cbHole.setAttribute('fill', '#ffe566');
+}
+function lightOff() {
+  cbBeam.setAttribute('display', 'none');
+  cbGlow.setAttribute('display', 'none');
+  cbBack.setAttribute('fill', '#e8e4dc');
+  cbHole.setAttribute('fill', '#0a0a0a');
+}
+
+cbTrigger.addEventListener('mouseenter', lightOn);
+cbTrigger.addEventListener('mouseleave', lightOff);
+
+/* ── Publications toggle: Selected / All ── */
+const pubToggle = document.getElementById('pub-toggle-track');
+let showAll = false;
+
+function applyPubFilter() {
+  const papers = document.querySelectorAll('.paper');
+  papers.forEach(p => {
+    const isSelected = p.dataset.selected === 'true';
+    if (showAll || isSelected) {
+      p.classList.remove('hidden');
+    } else {
+      p.classList.add('hidden');
+    }
+  });
+  // Hide year strips when all their papers are hidden
+  document.querySelectorAll('.year-group').forEach(group => {
+    const visible = group.querySelectorAll('.paper:not(.hidden)');
+    group.classList.toggle('all-hidden', visible.length === 0);
+  });
+}
+
+pubToggle.addEventListener('click', () => {
+  showAll = !showAll;
+  pubToggle.classList.toggle('on', showAll);
+  pubToggle.setAttribute('aria-checked', showAll);
+  applyPubFilter();
+});
+pubToggle.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); pubToggle.click(); }
+});
+
+// Start in "Selected" mode (showAll = false)
+applyPubFilter();
+
+/* ── About headshot water ripple ── */
+(function () {
+  const canvas = document.getElementById('headshot-canvas');
+  if (!canvas) return;
+  const DPR = window.devicePixelRatio || 1;
+  canvas.width = Math.round(240 * DPR);
+  canvas.height = Math.round(240 * DPR);
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.scale(DPR, DPR); // draw in CSS-pixel space; physical res = DPR×
+  const W = canvas.width, H = canvas.height;
+
+  const img = new Image();
+  img.onload = function () {
+    // Cover-fit: draw in CSS-pixel space (context is scaled by DPR)
+    const CSS = 240;
+    const scale = Math.max(CSS / img.width, CSS / img.height);
+    const dw = img.width * scale, dh = img.height * scale;
+    ctx.drawImage(img, (CSS - dw) / 2, (CSS - dh) / 2, dw, dh);
+
+    let sourceData, src;
+    try {
+      sourceData = ctx.getImageData(0, 0, W, H);
+      src = sourceData.data;
+    } catch (e) { return; } // tainted canvas (file:// protocol), skip ripple
+
+    const outData = ctx.createImageData(W, H);
+    const dst = outData.data;
+    let buf1 = new Float32Array(W * H);
+    let buf2 = new Float32Array(W * H);
+    const DAMP = 0.985, REFRACT = 0.07;
+    let maxActivity = 0, rafId = null;
+
+    function addDrop(x, y, radius, strength) {
+      const xi = Math.round(x), yi = Math.round(y), r2 = radius * radius;
+      for (let dy = -radius; dy <= radius; dy++) {
+        for (let dx = -radius; dx <= radius; dx++) {
+          if (dx * dx + dy * dy <= r2) {
+            const px = xi + dx, py = yi + dy;
+            if (px >= 0 && px < W && py >= 0 && py < H)
+              buf1[py * W + px] += strength;
+          }
+        }
+      }
+      maxActivity = Math.max(maxActivity, strength);
+      if (!rafId) rafId = requestAnimationFrame(step);
+    }
+
+    function step() {
+      for (let y = 1; y < H - 1; y++) {
+        for (let x = 1; x < W - 1; x++) {
+          const i = y * W + x;
+          buf2[i] = (buf1[i - 1] + buf1[i + 1] + buf1[i - W] + buf1[i + W]) * 0.5 - buf2[i];
+          buf2[i] *= DAMP;
+        }
+      }
+      const tmp = buf1; buf1 = buf2; buf2 = tmp;
+
+      dst.set(src);
+      for (let y = 1; y < H - 1; y++) {
+        for (let x = 1; x < W - 1; x++) {
+          const i = y * W + x;
+          const ddx = Math.round((buf1[i + 1] - buf1[i - 1]) * REFRACT);
+          const ddy = Math.round((buf1[i + W] - buf1[i - W]) * REFRACT);
+          const sx = Math.max(0, Math.min(W - 1, x + ddx));
+          const sy = Math.max(0, Math.min(H - 1, y + ddy));
+          const si = (sy * W + sx) * 4, di = i * 4;
+          dst[di] = src[si]; dst[di + 1] = src[si + 1];
+          dst[di + 2] = src[si + 2]; dst[di + 3] = src[si + 3];
+        }
+      }
+      ctx.putImageData(outData, 0, 0);
+
+      maxActivity *= DAMP;
+      if (maxActivity < 1.0) {
+        ctx.putImageData(sourceData, 0, 0);
+        buf1.fill(0); buf2.fill(0);
+        rafId = null;
+      } else {
+        rafId = requestAnimationFrame(step);
+      }
+    }
+
+    canvas.addEventListener('mouseenter', e => {
+      const r = canvas.getBoundingClientRect();
+      addDrop((e.clientX - r.left) * (W / r.width), (e.clientY - r.top) * (H / r.height), 12, 500);
+    });
+    canvas.addEventListener('mousemove', e => {
+      const r = canvas.getBoundingClientRect();
+      addDrop((e.clientX - r.left) * (W / r.width), (e.clientY - r.top) * (H / r.height), 6, 200);
+    });
+  };
+  img.src = 'headshot.jpg';
+})();
+
+/* ── Dark mode (Pixar lamp) toggle ── */
+const darkToggle = document.getElementById('dark-toggle');
+let isDark = false;
+darkToggle.addEventListener('click', () => {
+  isDark = !isDark;
+  document.body.classList.toggle('dark', isDark);
+});
+
+/* ── Japanese toggle ── */
+const jpBtn = document.getElementById('jp-toggle');
+let isJP = false;
+
+jpBtn.addEventListener('click', () => {
+  isJP = !isJP;
+  document.body.classList.toggle('jp', isJP);
+  document.documentElement.lang = isJP ? 'ja' : 'en';
+  const attr = isJP ? 'data-jp' : 'data-en';
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = el.getAttribute(attr);
+    if (val !== null) el.textContent = val;
+  });
+  // document.title = isJP ? '林 アレックス' : 'Alex Lin';
+});
+</script>
+</body>
+</html>
