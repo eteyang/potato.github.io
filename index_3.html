@@ -570,11 +570,154 @@
 
     .lamp-bulb { transition: fill 0.3s; }
     body.dark .lamp-bulb { fill: #ffe080; }
+
+    /* ── Train animation ── */
+    #train-stage {
+      position: absolute;
+      top: 0; bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+      /* no z-index — keeps stage non-stacking so train z-index is relative to topbar */
+    }
+    .train-el {
+      position: absolute;
+      top: 50%;
+      height: 34px;
+      width: auto;
+      image-rendering: pixelated;
+      z-index: 2;
+      filter: url(#motion-blur-h);
+    }
+    /* Left half: train goes OVER it (z-index below train) */
+    #train-tunnel-left {
+      position: absolute; top: 0;
+      pointer-events: none; display: none;
+      z-index: 1;
+      color: var(--black);
+    }
+    /* Right half: train goes UNDER it (z-index above train) */
+    #train-tunnel-right {
+      position: absolute; top: 0;
+      pointer-events: none; display: none;
+      z-index: 3;
+      color: var(--black);
+    }
+
+    /* ── Kinetic typography ── */
+    .topbar-name { cursor: default; }
+    .topbar-name .char {
+      display: inline-block;
+      white-space: pre;
+    }
+
+    /* 1. wave */
+    @keyframes kt-wave {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    .fx-wave .char {
+      animation: kt-wave 0.5s ease-in-out calc(var(--i) * 0.055s) both;
+    }
+
+    /* 2. bounce */
+    @keyframes kt-bounce {
+      0%,100% { transform: translateY(0) scaleY(1); }
+      40%      { transform: translateY(-8px) scaleY(1.1); }
+      70%      { transform: translateY(2px) scaleY(0.95); }
+    }
+    .fx-bounce .char {
+      animation: kt-bounce 0.55s cubic-bezier(0.34,1.56,0.64,1) calc(var(--i) * 0.06s) both;
+    }
+
+    /* 3. spin */
+    @keyframes kt-spin {
+      0%   { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+    .fx-spin .char {
+      animation: kt-spin 0.5s ease-in-out calc(var(--i) * 0.07s) both;
+    }
+
+    /* 4. flip */
+    @keyframes kt-flip {
+      0%   { transform: rotateX(0deg); }
+      50%  { transform: rotateX(180deg); }
+      100% { transform: rotateX(360deg); }
+    }
+    .fx-flip .char {
+      animation: kt-flip 0.5s ease-in-out calc(var(--i) * 0.07s) both;
+    }
+
+    /* 5. glitch */
+    @keyframes kt-glitch {
+      0%,100% { transform: translate(0,0); color: inherit; }
+      20%      { transform: translate(-3px, 1px); color: #d10000; }
+      40%      { transform: translate(3px,-1px); color: #0044ff; }
+      60%      { transform: translate(-2px, 2px); color: inherit; }
+      80%      { transform: translate(2px,-2px); color: #d10000; }
+    }
+    .fx-glitch .char {
+      animation: kt-glitch 0.45s steps(1) calc(var(--i) * 0.04s) both;
+    }
+
+    /* 6. shake */
+    @keyframes kt-shake {
+      0%,100% { transform: rotate(0deg); }
+      20%      { transform: rotate(-8deg); }
+      40%      { transform: rotate(8deg); }
+      60%      { transform: rotate(-6deg); }
+      80%      { transform: rotate(6deg); }
+    }
+    .fx-shake .char {
+      animation: kt-shake 0.5s ease-in-out calc(var(--i) * 0.05s) both;
+    }
+
+    /* 7. typewriter (fade+slide in from left) */
+    @keyframes kt-typewriter {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .fx-typewriter .char {
+      opacity: 0;
+      animation: kt-typewriter 0.25s ease-out calc(var(--i) * 0.07s) forwards;
+    }
+
+    /* 8. swing */
+    @keyframes kt-swing {
+      0%   { transform: rotate(0deg); transform-origin: top center; }
+      25%  { transform: rotate(15deg); transform-origin: top center; }
+      50%  { transform: rotate(-10deg); transform-origin: top center; }
+      75%  { transform: rotate(6deg); transform-origin: top center; }
+      100% { transform: rotate(0deg); transform-origin: top center; }
+    }
+    .fx-swing .char {
+      animation: kt-swing 0.6s ease-in-out calc(var(--i) * 0.06s) both;
+    }
+
+    /* 9. pop (scale up+down) */
+    @keyframes kt-pop {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.5); }
+    }
+    .fx-pop .char {
+      animation: kt-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) calc(var(--i) * 0.06s) both;
+    }
+
+    /* 10. stretch */
+    @keyframes kt-stretch {
+      0%,100% { transform: scaleX(1) scaleY(1); }
+      30%      { transform: scaleX(1.4) scaleY(0.7); }
+      60%      { transform: scaleX(0.8) scaleY(1.2); }
+    }
+    .fx-stretch .char {
+      animation: kt-stretch 0.5s ease-in-out calc(var(--i) * 0.06s) both;
+    }
   </style>
 </head>
 <body>
 
 <header class="topbar">
+  <div id="train-stage"></div>
   <span class="topbar-name" data-en="Ethan Yang" data-jp="イーサン・ヤン">Ethan Yang</span>
   <div class="topbar-spacer"></div>
   <button class="lamp-btn" id="dark-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
@@ -611,7 +754,30 @@
     <div class="circle"></div>
     <canvas id="jp-outline-canvas" aria-hidden="true"></canvas>
   </button>
+  <!-- Left arch half: train goes OVER this (z-index 1 < train z-index 2) -->
+  <svg id="train-tunnel-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 44" width="56" height="44" aria-hidden="true">
+    <defs><clipPath id="tun-lh"><rect x="0" y="0" width="28" height="44"/></clipPath></defs>
+    <path clip-path="url(#tun-lh)"
+          d="M12,44 L12,18 A16,16 0 0,1 44,18 L44,44 Z"
+          fill="currentColor"/>
+  </svg>
+  <!-- Right arch half: train goes UNDER this (z-index 3 > train z-index 2) -->
+  <svg id="train-tunnel-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 44" width="56" height="44" aria-hidden="true">
+    <defs><clipPath id="tun-rh"><rect x="28" y="0" width="28" height="44"/></clipPath></defs>
+    <path clip-path="url(#tun-rh)"
+          d="M12,44 L12,18 A16,16 0 0,1 44,18 L44,44 Z"
+          fill="currentColor"/>
+  </svg>
 </header>
+
+<!-- SVG filter definitions (off-screen) -->
+<svg id="train-filters" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;pointer-events:none">
+  <defs>
+    <filter id="motion-blur-h" x="-50%" width="200%" y="0%" height="100%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6 0"/>
+    </filter>
+  </defs>
+</svg>
 
 <div class="layout">
 
@@ -1076,7 +1242,61 @@ jpBtn.addEventListener('click', () => {
     if (val !== null) el.textContent = val;
   });
   // document.title = isJP ? '林 アレックス' : 'Alex Lin';
+  // re-split topbar name after text swap
+  setTimeout(splitTopbarName, 0);
 });
+
+/* ── Kinetic typography for topbar name ── */
+(function () {
+  const EFFECTS = [
+    'fx-wave', 'fx-bounce', 'fx-spin', 'fx-flip', 'fx-glitch',
+    'fx-shake', 'fx-typewriter', 'fx-swing', 'fx-pop', 'fx-stretch'
+  ];
+  let effectIdx = 0;
+
+  const nameEl = document.querySelector('.topbar-name');
+
+  function splitTopbarName() {
+    const text = nameEl.textContent;
+    nameEl.innerHTML = '';
+    [...text].forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'char';
+      span.style.setProperty('--i', i);
+      span.textContent = ch;
+      nameEl.appendChild(span);
+    });
+  }
+
+  // expose so JP toggle can call it
+  window.splitTopbarName = splitTopbarName;
+
+  splitTopbarName();
+
+  nameEl.addEventListener('mouseenter', () => {
+    // remove any existing effect class
+    EFFECTS.forEach(fx => nameEl.classList.remove(fx));
+
+    const fx = EFFECTS[effectIdx % EFFECTS.length];
+    effectIdx++;
+
+    // force reflow so re-adding the class triggers animation
+    void nameEl.offsetWidth;
+    nameEl.classList.add(fx);
+
+    // count animationend events (one per char) then clean up
+    const chars = nameEl.querySelectorAll('.char');
+    let done = 0;
+    function onEnd() {
+      done++;
+      if (done >= chars.length) {
+        nameEl.classList.remove(fx);
+        chars.forEach(c => c.removeEventListener('animationend', onEnd));
+      }
+    }
+    chars.forEach(c => c.addEventListener('animationend', onEnd));
+  });
+})();
 
 /* ── White lizard about header ── */
 (function () {
@@ -1210,6 +1430,89 @@ jpBtn.addEventListener('animationend', function () {
       endFrac = 0; target = 0; draw();
     }
   });
+})();
+
+/* ── Train animation ── */
+(function () {
+  const TRAINS  = Array.from({ length: 6 }, (_, i) => `trains/train${i + 1}.png`);
+  const TUNNEL_W = 56;
+  const TRAIN_H  = 34;   // CSS display height (px)
+  const SPEED    = 580;  // px/s — 2× original
+  let trainIdx = 0;
+  let running  = false;
+
+  const topbar  = document.querySelector('.topbar');
+  const nameEl  = document.querySelector('.topbar-name');
+  const lampBtn = document.getElementById('dark-toggle');
+  const stage   = document.getElementById('train-stage');
+  const tunnelL = document.getElementById('train-tunnel-left');
+  const tunnelR = document.getElementById('train-tunnel-right');
+
+  nameEl.addEventListener('click', fireTrain);
+
+  function fireTrain() {
+    if (running) return;
+    running = true;
+
+    const topbarRect = topbar.getBoundingClientRect();
+    const nameRect   = nameEl.getBoundingClientRect();
+    const lampRect   = lampBtn.getBoundingClientRect();
+
+    const nameRight  = nameRect.right - topbarRect.left;
+    // Arch portal sits just left of the lamp
+    const tunnelLeft = lampRect.left - topbarRect.left - TUNNEL_W - 6;
+
+    // Stage spans nameRight → tunnelLeft+TUNNEL_W
+    // Left edge clips the train until it slides out from behind the name.
+    // Right edge clips the train as it disappears fully into the arch.
+    stage.style.left  = nameRight + 'px';
+    stage.style.right = (topbarRect.width - tunnelLeft - TUNNEL_W) + 'px';
+
+    // Both arch halves at the same left position; CSS z-index handles layering
+    tunnelL.style.left = tunnelR.style.left = tunnelLeft + 'px';
+    tunnelL.style.display = tunnelR.style.display = 'block';
+
+    // Build train element
+    const img = document.createElement('img');
+    img.className = 'train-el';
+    stage.appendChild(img);
+
+    img.onload = function () {
+      const trainDisplayW = img.naturalWidth * (TRAIN_H / img.naturalHeight);
+
+      // Start fully hidden: left edge is trainDisplayW behind stage's left edge (behind the name)
+      img.style.left      = (-trainDisplayW) + 'px';
+      img.style.transform = 'translate(0,-50%)';
+
+      // End: left edge reaches stage's right boundary — train fully swallowed by arch
+      const stageWidth = tunnelLeft + TUNNEL_W - nameRight;
+      const dist = stageWidth + trainDisplayW;
+      const dur  = dist / SPEED;
+
+      void img.offsetWidth; // force reflow so baseline transform is set
+
+      img.style.transition = `transform ${dur}s linear`;
+      img.style.transform  = `translate(${dist}px,-50%)`;
+
+      // After animation, fade both halves and clean up
+      setTimeout(() => {
+        tunnelL.style.transition = tunnelR.style.transition = 'opacity 0.18s';
+        tunnelL.style.opacity    = tunnelR.style.opacity    = '0';
+        setTimeout(() => {
+          img.remove();
+          tunnelL.style.display    = tunnelR.style.display    = 'none';
+          tunnelL.style.opacity    = tunnelR.style.opacity    = '1';
+          tunnelL.style.transition = tunnelR.style.transition = '';
+          stage.style.left  = '';
+          stage.style.right = '';
+          running = false;
+        }, 200);
+      }, dur * 1000 + 60);
+    };
+
+    img.src = TRAINS[trainIdx % TRAINS.length];
+    trainIdx++;
+  }
 })();
 </script>
 </body>
