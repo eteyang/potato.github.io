@@ -480,6 +480,19 @@
     .c4 { background: #5a5050; color: #f2efe8; }
     .c5 { background: #1a1a5a; color: #f2efe8; }
 
+    /* ── White lizard header video ── */
+    #view-about .section-header { overflow: hidden; }
+    .about-lizard {
+      position: absolute;
+      top: 0; bottom: 0;
+      z-index: 1;
+      transform: translateY(105%);
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+    .about-lizard.visible { transform: translateY(0); }
+    .about-lizard video { height: 100%; width: auto; display: block; }
+
     /* ── About page layout ── */
     .about-body {
       display: flex;
@@ -834,6 +847,9 @@
     <div class="view" id="view-about">
       <div class="section-header">
         <h1 data-en="About" data-jp="自己紹介">About</h1>
+        <div class="about-lizard" id="about-lizard">
+          <video id="lizard-video" src="white_lizard.mp4" muted playsinline preload="auto"></video>
+        </div>
       </div>
       <div class="about-body">
         <div class="about-headshot">
@@ -1061,6 +1077,49 @@ jpBtn.addEventListener('click', () => {
   });
   // document.title = isJP ? '林 アレックス' : 'Alex Lin';
 });
+
+/* ── White lizard about header ── */
+(function () {
+  const lizard = document.getElementById('about-lizard');
+  const video  = document.getElementById('lizard-video');
+
+  function slideIn() {
+    const h1 = lizard.closest('.section-header').querySelector('h1');
+    const h1Rect = h1.getBoundingClientRect();
+    const headerRect = lizard.parentElement.getBoundingClientRect();
+    lizard.style.left = (h1Rect.right - headerRect.left + 12) + 'px';
+    video.currentTime = 0;
+    lizard.classList.add('visible');
+  }
+  function slideOut() {
+    lizard.classList.remove('visible');
+  }
+
+  // Start playing once fully slid in; reset once fully slid out
+  lizard.addEventListener('transitionend', () => {
+    if (lizard.classList.contains('visible')) {
+      video.play();
+    } else {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+
+  video.addEventListener('ended', slideOut);
+
+  // Trigger on About nav click
+  document.querySelectorAll('.nav-link[data-view]').forEach(link => {
+    link.addEventListener('click', () => {
+      if (link.dataset.view === 'about') {
+        slideIn();
+      } else {
+        slideOut();
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
+  });
+})();
 
 /* Free button from animation clip-path once sunrise completes */
 jpBtn.addEventListener('animationend', function () {
