@@ -381,20 +381,46 @@
       padding: 1.25rem 2.5rem;
       position: relative;
       cursor: default;
-      /* transition: background 0.15s, border-bottom-color 0.15s; */
+      transition: background 0.15s,
+                  border-bottom-color 0s 0.38s; /* wait for tab to close, then snap back */
     }
-    /* .paper-wrapper:hover .paper { background: #eceae2; border-bottom-color: transparent; } */
-    .paper-wrapper:hover .paper { background: #ffffff; border-bottom-color: transparent; }
+    .paper-wrapper:hover .paper {
+      background: var(--white);
+      border-bottom-color: transparent;
+      transition: background 0.15s,
+                  border-bottom-color 0s; /* disappear instantly on hover */
+    }
     .paper-wrapper.hidden { display: none; }
 
     /* Collapsing wrapper — height: 0 hides tab; expanding to 36px pushes papers below down */
     .paper-tab-wrap {
       height: 0;
       overflow: hidden;
-      transition: height 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+      background-color: transparent;
+      transition: height 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+                  background-color 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .paper-wrapper:hover .paper-tab-wrap { height: 36px; background: #ffffff; border-bottom: var(--border); }
-    body.dark .paper-wrapper:hover .paper-tab-wrap { background: #1c1c1c; }
+    .paper-wrapper:hover .paper-tab-wrap {
+      height: 36px;
+      background-color: var(--white);
+    }
+    body.dark .paper-wrapper:hover .paper-tab-wrap { background-color: #1c1c1c; }
+
+    /* Bottom border lives on ::after so it sits at the wrapper's true bottom edge —
+       no phantom 1px gap at height:0, and it travels with the collapsing tab */
+    .paper-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background-color: transparent;
+      transition: background-color 0s 0.38s; /* stay visible during collapse, snap away after */
+    }
+    .paper-wrapper:hover::after {
+      background-color: #0a0a0a;
+      transition: background-color 0s; /* appear instantly on hover */
+    }
+    body.dark .paper-wrapper:hover::after { background-color: #e8e4dc; }
 
     .paper-tab {
       height: 36px;
@@ -402,7 +428,7 @@
       align-items: center;
       gap: 8px;
       padding: 0 2.5rem;
-      background: #ffffff;
+      background: var(--white);
       transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .paper-wrapper:hover .paper-tab { transform: translateX(170px); }
@@ -415,6 +441,7 @@
       transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
       z-index: 2;
       border-right: var(--border);
+      border-bottom: var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
