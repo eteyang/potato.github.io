@@ -260,10 +260,10 @@
       width: 100%;
       font-family: inherit;
     }
-    nav a::before { content: '-'; opacity: 0; transition: opacity 0.1s; font-size: 11px; }
+    /* nav a::before { content: '-'; opacity: 0; transition: opacity 0.1s; font-size: 11px; } */
     nav a:hover::before, nav a.active::before { opacity: 1; }
-    nav a.active { color: var(--red); }
-    nav a:hover { color: var(--red); }
+    nav a.active { color: var(--red);}
+    nav a:hover { color: var(--red);}
 
     .contact-item {
       display: flex;
@@ -334,7 +334,7 @@
     }
     .pub-toggle-label {
       font-size: 10px;
-      font-weight: 700;
+      /* font-weight: 700; */
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--mid);
@@ -374,21 +374,43 @@
     .year-strip span { font-size: 11px;  letter-spacing: 0.14em; text-box-trim: trim-end;  } 
 
     /* Paper rows */
+    .paper-wrapper { position: relative; overflow: hidden; }
+
     .paper {
       border-bottom: var(--border);
       padding: 1.25rem 2.5rem;
       position: relative;
-      overflow: hidden;
       cursor: default;
-      transition: background 0.15s;
+      /* transition: background 0.15s, border-bottom-color 0.15s; */
     }
-    .paper:hover { background: #eceae2; }
-    .paper.hidden { display: none; }
+    /* .paper-wrapper:hover .paper { background: #eceae2; border-bottom-color: transparent; } */
+    .paper-wrapper:hover .paper { background: #ffffff; border-bottom-color: transparent; }
+    .paper-wrapper.hidden { display: none; }
+
+    /* Collapsing wrapper — height: 0 hides tab; expanding to 36px pushes papers below down */
+    .paper-tab-wrap {
+      height: 0;
+      overflow: hidden;
+      transition: height 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .paper-wrapper:hover .paper-tab-wrap { height: 36px; background: #ffffff; border-bottom: var(--border); }
+    body.dark .paper-wrapper:hover .paper-tab-wrap { background: #1c1c1c; }
+
+    .paper-tab {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 2.5rem;
+      background: #ffffff;
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .paper-wrapper:hover .paper-tab { transform: translateX(170px); }
 
     .paper-img-placeholder {
       position: absolute;
-      left: 0; top: 0;
-      height: 100%; width: 160px;
+      left: 0; top: 0; bottom: 0;
+      width: 160px;
       transform: translateX(-100%);
       transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
       z-index: 2;
@@ -402,14 +424,14 @@
       text-transform: uppercase;
       writing-mode: vertical-rl;
     }
-    .paper:hover .paper-img-placeholder { transform: translateX(0); }
+    .paper-wrapper:hover .paper-img-placeholder { transform: translateX(0); }
 
     .paper-content {
       position: relative;
       z-index: 1;
       transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .paper:hover .paper-content { transform: translateX(170px); }
+    .paper-wrapper:hover .paper-content { transform: translateX(170px); }
 
     .paper-title {
       font-size: 13px;
@@ -436,9 +458,9 @@
     .paper-venue-full { font-size: 10px; color: var(--mid); margin-bottom: 10px; letter-spacing: 0.03em; text-box-trim: trim-end;}
     .paper-links { display: flex; gap: 6px; flex-wrap: wrap; }
     .paper-link {
-      font-size: 10px; font-weight: 700;
-      padding: 3px 10px;
-      border: 2px solid var(--black);
+      font-size: 10px;
+      /* padding: 3px 10px; */
+      /* border: 1px solid var(--black); */
       color: var(--black);
       text-decoration: none;
       text-transform: uppercase;
@@ -446,7 +468,8 @@
       background: transparent;
       transition: background 0.1s, color 0.1s;
     }
-    .paper-link:hover { background: var(--black); color: var(--white); }
+    /* .paper-link:hover { background: var(--black); color: var(--white); } */
+      .paper-link:hover { color: var(--red); }
 
     /* Year group: hide strip when all papers in it are hidden */
     .year-group.all-hidden { display: none; }
@@ -528,7 +551,8 @@
       --mid: #777777;
       --border: 1px solid #e8e4dc;
     }
-    body.dark .paper:hover { background: #1c1c1c; }
+    body.dark .paper-wrapper:hover .paper { background: #1c1c1c; }
+    body.dark .paper-tab { background: #1c1c1c; }
 
     /* ── Pixar lamp dark-mode toggle ── */
     .lamp-btn {
@@ -854,39 +878,43 @@
       <div class="year-group" data-year="2025">
         <div class="year-strip"><span>2025</span></div>
 
-        <div class="paper" data-selected="false">
+        <div class="paper-wrapper">
           <div class="paper-img-placeholder c1"><span>Fig. 1</span></div>
-          <div class="paper-content">
-            <div class="paper-title">
-              ARticulate: Interactive Visual Guidance for Demonstrated Rotational Degrees of Freedom in Mobile AR
-              <span class="venue-badge">CHI</span>
+          <div class="paper" data-selected="false">
+            <div class="paper-content">
+              <div class="paper-title">
+                ARticulate: Interactive Visual Guidance for Demonstrated Rotational Degrees of Freedom in Mobile AR
+                <span class="venue-badge">CHI</span>
+              </div>
+              <div class="paper-authors">Nhan Tran, <strong>Ethan Yang</strong>, Abe Davis</div>
+              <div class="paper-venue-full">Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems</div>
             </div>
-            <div class="paper-authors">Nhan Tran, <strong>Ethan Yang</strong>, Abe Davis</div>
-            <div class="paper-venue-full">Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems</div>
-            <!-- <div class="paper-links">
-              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
-              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
-              <a class="paper-link" href="#" data-en="arXiv" data-jp="arXiv">arXiv</a>
-              <a class="paper-link" href="#" data-en="Slides" data-jp="スライド">Slides</a>
-            </div> -->
+          </div>
+          <div class="paper-tab-wrap">
+            <div class="paper-tab">
+              <a class="paper-link" href="#">Paper</a>
+              <a class="paper-link" href="#">Code</a>
+            </div>
           </div>
         </div>
 
-        <div class="paper" data-selected="false">
+        <div class="paper-wrapper">
           <div class="paper-img-placeholder c1"><span>Fig. 1</span></div>
-          <div class="paper-content">
-            <div class="paper-title">
-              Million Eyes on the “Robot Umps”: The Case for Studying Sports in HRI Through Baseball
-              <span class="venue-badge">HRI</span>
+          <div class="paper" data-selected="false">
+            <div class="paper-content">
+              <div class="paper-title">
+                Million Eyes on the "Robot Umps": The Case for Studying Sports in HRI Through Baseball
+                <span class="venue-badge">HRI</span>
+              </div>
+              <div class="paper-authors">Waki Kamino, Andrea W Wen-Yi, Dhruv Agarwal, Sil Hamilton, Eun Jeong Kang, Jieun Kim, Keigo Kusumegi, Pegah Moradi, Daniel Mwesigwa, Yan Tao, I-Ting Tsai, <strong>Ethan Yang</strong>, Shengqi Zhu, Shu-Jung Han, Chi-Jung Lee, Michael Joseph Sack, Tianhong Catherine Yu, Weslie Khoo, Andy Elliot Ricci, Yoyo Tsung-Yu Hou, Boyoung Kim, Selma Šabanović, David J Crandall, Karen Levy, Malte F Jung</div>
+              <div class="paper-venue-full">2025 20th ACM/IEEE International Conference on Human-Robot Interaction (HRI)</div>
             </div>
-            <div class="paper-authors">Waki Kamino, Andrea W Wen-Yi, Dhruv Agarwal, Sil Hamilton, Eun Jeong Kang, Jieun Kim, Keigo Kusumegi, Pegah Moradi, Daniel Mwesigwa, Yan Tao, I-Ting Tsai, <strong>Ethan Yang</strong>, Shengqi Zhu, Shu-Jung Han, Chi-Jung Lee, Michael Joseph Sack, Tianhong Catherine Yu, Weslie Khoo, Andy Elliot Ricci, Yoyo Tsung-Yu Hou, Boyoung Kim, Selma Šabanović, David J Crandall, Karen Levy, Malte F Jung</div>
-            <div class="paper-venue-full">2025 20th ACM/IEEE International Conference on Human-Robot Interaction (HRI)</div>
-            <!-- <div class="paper-links">
-              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
-              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
-              <a class="paper-link" href="#" data-en="arXiv" data-jp="arXiv">arXiv</a>
-              <a class="paper-link" href="#" data-en="Slides" data-jp="スライド">Slides</a>
-            </div> -->
+          </div>
+          <div class="paper-tab-wrap">
+            <div class="paper-tab">
+              <a class="paper-link" href="#">Paper</a>
+              <a class="paper-link" href="#">Code</a>
+            </div>
           </div>
         </div>
       </div>
@@ -895,39 +923,43 @@
       <div class="year-group" data-year="2024">
         <div class="year-strip"><span>2024</span></div>
 
-        <div class="paper" data-selected="true">
+        <div class="paper-wrapper">
           <div class="paper-img-placeholder c1"><span>Fig. 1</span></div>
-          <div class="paper-content">
-            <div class="paper-title">
-              Filter-Guided Diffusion for Controllable Image Generation
-              <span class="venue-badge">SIGGRAPH</span>
+          <div class="paper" data-selected="true">
+            <div class="paper-content">
+              <div class="paper-title">
+                Filter-Guided Diffusion for Controllable Image Generation
+                <span class="venue-badge">SIGGRAPH</span>
+              </div>
+              <div class="paper-authors">Zeqi Gu*, <strong>Ethan Yang*</strong>, Abe Davis</div>
+              <div class="paper-venue-full">ACM SIGGRAPH 2024 conference papers</div>
             </div>
-            <div class="paper-authors">Zeqi Gu*, <strong>Ethan Yang*</strong>, Abe Davis</div>
-            <div class="paper-venue-full">ACM SIGGRAPH 2024 conference papers</div>
-            <!-- <div class="paper-links">
-              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
-              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
-              <a class="paper-link" href="#" data-en="arXiv" data-jp="arXiv">arXiv</a>
-              <a class="paper-link" href="#" data-en="Slides" data-jp="スライド">Slides</a>
-            </div> -->
+          </div>
+          <div class="paper-tab-wrap">
+            <div class="paper-tab">
+              <a class="paper-link" href="#">Paper</a>
+              <a class="paper-link" href="#">Code</a>
+            </div>
           </div>
         </div>
 
-        <div class="paper" data-selected="true">
+        <div class="paper-wrapper">
           <div class="paper-img-placeholder c2"><span>Fig. 2</span></div>
-          <div class="paper-content">
-            <div class="paper-title">
-              Personal Time-Lapse
-              <span class="venue-badge">UIST</span>
+          <div class="paper" data-selected="true">
+            <div class="paper-content">
+              <div class="paper-title">
+                Personal Time-Lapse
+                <span class="venue-badge">UIST</span>
+              </div>
+              <div class="paper-authors">Nhan Tran, <strong>Ethan Yang</strong>, Angelique Taylor, Abe Davis</div>
+              <div class="paper-venue-full">Proceedings of the 37th Annual ACM Symposium on User Interface Software and Technology</div>
             </div>
-            <div class="paper-authors">Nhan Tran, <strong>Ethan Yang</strong>, Angelique Taylor, Abe Davis</div>
-            <div class="paper-venue-full">Proceedings of the 37th Annual ACM Symposium on User Interface Software and Technology</div>
-            <!-- <div class="paper-links">
-              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
-              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
-              <a class="paper-link" href="#" data-en="Slides" data-jp="スライド">Slides</a>
-              <a class="paper-link" href="#" data-en="Poster" data-jp="ポスター">Poster</a>
-            </div> -->
+          </div>
+          <div class="paper-tab-wrap">
+            <div class="paper-tab">
+              <a class="paper-link" href="#">Paper</a>
+              <a class="paper-link" href="#">Code</a>
+            </div>
           </div>
         </div>
       </div>
@@ -936,49 +968,63 @@
       <div class="year-group" data-year="2023">
         <div class="year-strip"><span>2023</span></div>
 
-        <div class="paper" data-selected="false">
+        <div class="paper-wrapper">
           <div class="paper-img-placeholder c5"><span>Fig. 5</span></div>
-          <div class="paper-content">
-            <div class="paper-title">
-              Enhancing diffusion models with 3d perspective geometry constraints
-              <span class="venue-badge">SIGGRAPH</span>
+          <div class="paper" data-selected="false">
+            <div class="paper-content">
+              <div class="paper-title">
+                Enhancing diffusion models with 3d perspective geometry constraints
+                <span class="venue-badge">SIGGRAPH</span>
+              </div>
+              <div class="paper-authors">Rishi Upadhyay, Howard Zhang, Yunhao Ba, <strong>Ethan Yang</strong>, Blake Gella, Sicheng Jiang, Alex Wong, Achuta Kadambi</div>
+              <div class="paper-venue-full">ACM Transactions on Graphics (TOG), 2023</div>
             </div>
-            <div class="paper-authors">Rishi Upadhyay, Howard Zhang, Yunhao Ba, <strong>Ethan Yang</strong>, Blake Gella, Sicheng Jiang, Alex Wong, Achuta Kadambi</div>
-            <div class="paper-venue-full" >ACM Transactions on Graphics (TOG), 2023</div>
-            <!-- <div class="paper-links">
-              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
-            </div> -->
+          </div>
+          <div class="paper-tab-wrap">
+            <div class="paper-tab">
+              <a class="paper-link" href="#">Paper</a>
+              <a class="paper-link" href="#">Code</a>
+            </div>
           </div>
         </div>
 
-        <div class="paper" data-selected="false">
+        <div class="paper-wrapper">
           <div class="paper-img-placeholder c5"><span>Fig. 5</span></div>
-          <div class="paper-content">
-            <div class="paper-title">
-              Weatherstream: Light transport automation of single image deweathering
-              <span class="venue-badge">CVPR</span>
+          <div class="paper" data-selected="false">
+            <div class="paper-content">
+              <div class="paper-title">
+                Weatherstream: Light transport automation of single image deweathering
+                <span class="venue-badge">CVPR</span>
+              </div>
+              <div class="paper-authors">Howard Zhang, Yunhao Ba, <strong>Ethan Yang</strong> Varan Mehra, Blake Gella, Akira Suzuki, Arnold Pfahnl, Chethan Chinder Chandrappa, Alex Wong, Achuta Kadambi</div>
+              <div class="paper-venue-full">Proceedings of the IEEE/CVF conference on computer vision and pattern recognition</div>
             </div>
-            <div class="paper-authors">Howard Zhang, Yunhao Ba, <strong>Ethan Yang</strong> Varan Mehra, Blake Gella, Akira Suzuki, Arnold Pfahnl, Chethan Chinder Chandrappa, Alex Wong, Achuta Kadambi</div>
-            <div class="paper-venue-full">Proceedings of the IEEE/CVF conference on computer vision and pattern recognition</div>
-            <!-- <div class="paper-links">
-              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
-            </div> -->
+          </div>
+          <div class="paper-tab-wrap">
+            <div class="paper-tab">
+              <a class="paper-link" href="#">Paper</a>
+              <a class="paper-link" href="#">Code</a>
+            </div>
           </div>
         </div>
 
-        <div class="paper" data-selected="false">
+        <div class="paper-wrapper">
           <div class="paper-img-placeholder c4"><span>Fig. 4</span></div>
-          <div class="paper-content">
-            <div class="paper-title">
-              Rapid and stain-free quantification of viral plaque via lens-free holography and deep learning
-              <span class="venue-badge">Nature</span>
+          <div class="paper" data-selected="false">
+            <div class="paper-content">
+              <div class="paper-title">
+                Rapid and stain-free quantification of viral plaque via lens-free holography and deep learning
+                <span class="venue-badge">Nature</span>
+              </div>
+              <div class="paper-authors">Tairan Liu, Yuzhu Li, Hatice Ceylan Koydemir, Yijie Zhang, <strong>Ethan Yang</strong>, Merve Eryilmaz, Hongda Wang, Jingxi Li, Bijie Bai, Guangdong Ma, Aydogan Ozcan</div>
+              <div class="paper-venue-full">Nature Biomedical Engineering, 2023</div>
             </div>
-            <div class="paper-authors">Tairan Liu, Yuzhu Li, Hatice Ceylan Koydemir, Yijie Zhang, <strong>Ethan Yang</strong>, Merve Eryilmaz, Hongda Wang, Jingxi Li, Bijie Bai, Guangdong Ma, Aydogan Ozcan</div>
-            <div class="paper-venue-full">Nature Biomedical Engineering, 2023</div>
-            <!-- <div class="paper-links">
-              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
-              <a class="paper-link" href="#" data-en="Poster" data-jp="ポスター">Poster</a>
-            </div> -->
+          </div>
+          <div class="paper-tab-wrap">
+            <div class="paper-tab">
+              <a class="paper-link" href="#">Paper</a>
+              <a class="paper-link" href="#">Code</a>
+            </div>
           </div>
         </div>
 
@@ -988,23 +1034,26 @@
       <div class="year-group" data-year="2022">
         <div class="year-strip"><span>2022</span></div>
 
-        <div class="paper" data-selected="true">
+        <div class="paper-wrapper">
           <div class="paper-img-placeholder c3"><span>Fig. 3</span></div>
-          <div class="paper-content">
-            <div class="paper-title">
-              Not just streaks: Towards ground truth for single image deraining
-              <span class="venue-badge">ECCV</span>
+          <div class="paper" data-selected="true">
+            <div class="paper-content">
+              <div class="paper-title">
+                Not just streaks: Towards ground truth for single image deraining
+                <span class="venue-badge">ECCV</span>
+              </div>
+              <div class="paper-authors">Yunhao Ba, Howard Zhang, <strong>Ethan Yang</strong>, Akira Suzuki, Arnold Pfahnl, Chethan Chinder Chandrappa, Celso M De Melo, Suya You, Stefano Soatto, Alex Wong, Achuta Kadambi</div>
+              <div class="paper-venue-full">European Conference on Computer Vision, 2022</div>
             </div>
-            <div class="paper-authors">Yunhao Ba, Howard Zhang, <strong>Ethan Yang</strong>, Akira Suzuki, Arnold Pfahnl, Chethan Chinder Chandrappa, Celso M De Melo, Suya You, Stefano Soatto, Alex Wong, Achuta Kadambi</div>
-            <div class="paper-venue-full" >European Conference on Computer Vision, 2022</div>
-            <!-- <div class="paper-links">
-              <a class="paper-link" href="#" data-en="PDF" data-jp="PDF">PDF</a>
-              <a class="paper-link" href="#" data-en="Code" data-jp="コード">Code</a>
-              <a class="paper-link" href="#" data-en="arXiv" data-jp="arXiv">arXiv</a>
-            </div> -->
+          </div>
+          <div class="paper-tab-wrap">
+            <div class="paper-tab">
+              <a class="paper-link" href="#">Paper</a>
+              <a class="paper-link" href="#">Code</a>
+            </div>
           </div>
         </div>
-        
+
       </div>
 
     </div>
@@ -1100,15 +1149,18 @@ function applyPubFilter() {
   const papers = document.querySelectorAll('.paper');
   papers.forEach(p => {
     const isSelected = p.dataset.selected === 'true';
+    const wrapper = p.closest('.paper-wrapper');
     if (showAll || isSelected) {
       p.classList.remove('hidden');
+      if (wrapper) wrapper.classList.remove('hidden');
     } else {
       p.classList.add('hidden');
+      if (wrapper) wrapper.classList.add('hidden');
     }
   });
   // Hide year strips when all their papers are hidden
   document.querySelectorAll('.year-group').forEach(group => {
-    const visible = group.querySelectorAll('.paper:not(.hidden)');
+    const visible = group.querySelectorAll('.paper-wrapper:not(.hidden)');
     group.classList.toggle('all-hidden', visible.length === 0);
   });
 }
