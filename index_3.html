@@ -69,7 +69,7 @@
       width: 32px;
       height: 22px;
       background: #fff;
-      border: 1.5px solid rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.35);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -78,21 +78,15 @@
       padding: 0;
       overflow: visible;
       position: relative;
-      transition: width 0.3s cubic-bezier(0.4,0,0.2,1),
-                  height 0.3s cubic-bezier(0.4,0,0.2,1),
-                  border-color 0.2s,
-                  box-shadow 0.2s;
-      animation: jp-sunrise 2s cubic-bezier(0.34, 1.3, 0.64, 1) 0.5s both;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     /* Default state: just the red circle, white bg */
     .jp-btn .flag-white-top,
     .jp-btn .flag-white-bot { display: none; }
 
-    /* On hover: expand to proper flag proportions, show stripes */
+    /* On hover: highlight border only */
     .jp-btn:hover {
-      width: 48px;
-      height: 32px;
       border-color: rgba(255,255,255,0.7);
       box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
     }
@@ -102,23 +96,12 @@
       border-radius: 50%;
       background: var(--red);
       pointer-events: none;
-      transition: width 0.3s, height 0.3s;
       position: relative;
       z-index: 2;
       flex-shrink: 0;
     }
 
-    .jp-btn:hover .circle {
-      width: 14px;
-      height: 14px;
-    }
-
     .jp-btn:active { opacity: 0.8; transform: scale(0.95); }
-
-    @keyframes jp-sunrise {
-      from { clip-path: inset(110% 0 0 0); transform: translateY(8px); }
-      to   { clip-path: inset(0% 0 0 0);   transform: translateY(0);   }
-    }
 
     /* Outline canvas overlay */
     #jp-outline-canvas {
@@ -126,8 +109,9 @@
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       pointer-events: none;
-      width: 60px; height: 44px;
+      width: 48px; height: 32px;
     }
+
 
     /* ── Layout ── */
     .layout {
@@ -206,6 +190,13 @@
     }
     .profile-role { font-size: 13px; color: var(--black); letter-spacing: 0.05em; text-transform: uppercase; }
 
+    #phd-role { display: flex; align-items: center; gap: 6px; cursor: default; }
+    .comp-icon-wrap { display: flex; align-items: center; }
+    #comp-screen { transition: fill 0.22s; }
+    #comp-shine  { transition: fill 0.22s; }
+    #phd-role:hover #comp-screen { fill: #7ecfff; }
+    #phd-role:hover #comp-shine  { fill: rgba(255,255,255,0.22); }
+
     #abes-group-role { display: flex; align-items: center; gap: 5px; line-height: 1px; }
     #labcat-icon { height: 2.0em; width: auto; display: inline-block; }
     @keyframes barrel-roll {
@@ -245,12 +236,12 @@
     nav a {
       display: flex;
       align-items: center;
-      gap: 8px;
+      /* gap: 200px; */
       font-size: 13px;
       /* font-weight: 700; */
       text-decoration: none;
       color: var(--black);
-      padding: 5px 0;
+      padding: 1px 0;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       transition: color 0.1s;
@@ -317,7 +308,7 @@
     .section-header h1 {
       font-size: 13px;
       font-weight: 100;
-      text-transform: uppercase;
+      /* text-transform: uppercase; */
       letter-spacing: 0.14em;
     }
     .section-note {
@@ -539,6 +530,7 @@
       transform: translateY(105%);
       transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
+      /* border: var(--border); */
     }
     .about-lizard.visible { transform: translateY(0); }
     .about-lizard video { height: 100%; width: auto; display: block; }
@@ -638,20 +630,6 @@
       image-rendering: pixelated;
       z-index: 2;
       filter: url(#motion-blur-h);
-    }
-    /* Left half: train goes OVER it (z-index below train) */
-    #train-tunnel-left {
-      position: absolute; top: 0;
-      pointer-events: none; display: none;
-      z-index: 1;
-      color: var(--black);
-    }
-    /* Right half: train goes UNDER it (z-index above train) */
-    #train-tunnel-right {
-      position: absolute; top: 0;
-      pointer-events: none; display: none;
-      z-index: 3;
-      color: var(--black);
     }
 
     /* ── Kinetic typography ── */
@@ -763,6 +741,29 @@
     .fx-stretch .char {
       animation: kt-stretch 0.5s ease-in-out calc(var(--i) * 0.06s) both;
     }
+
+    /* ── Tennis ball simulation ── */
+    #view-about { position: relative; min-height: 100%; }
+    .tennis-sim-wrap {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+      cursor: none;
+    }
+    #tennis-canvas { display: block; width: 100%; height: 100%; }
+    .tennis-dog-cursor {
+      position: absolute;
+      pointer-events: none;
+      font-size: 26px;
+      line-height: 1;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      z-index: 6;
+      user-select: none;
+      transition: opacity 0.15s;
+    }
   </style>
 </head>
 <body>
@@ -805,20 +806,6 @@
     <div class="circle"></div>
     <canvas id="jp-outline-canvas" aria-hidden="true"></canvas>
   </button>
-  <!-- Left arch half: train goes OVER this (z-index 1 < train z-index 2) -->
-  <svg id="train-tunnel-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 44" width="56" height="44" aria-hidden="true">
-    <defs><clipPath id="tun-lh"><rect x="0" y="0" width="28" height="44"/></clipPath></defs>
-    <path clip-path="url(#tun-lh)"
-          d="M12,44 L12,18 A16,16 0 0,1 44,18 L44,44 Z"
-          fill="currentColor"/>
-  </svg>
-  <!-- Right arch half: train goes UNDER this (z-index 3 > train z-index 2) -->
-  <svg id="train-tunnel-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 44" width="56" height="44" aria-hidden="true">
-    <defs><clipPath id="tun-rh"><rect x="28" y="0" width="28" height="44"/></clipPath></defs>
-    <path clip-path="url(#tun-rh)"
-          d="M12,44 L12,18 A16,16 0 0,1 44,18 L44,44 Z"
-          fill="currentColor"/>
-  </svg>
 </header>
 
 <!-- SVG filter definitions (off-screen) -->
@@ -836,7 +823,31 @@
   <aside class="sidebar">
 
     <div class="sidebar-block">
-      <div class="profile-role" data-en="3rd Year CS PhD" data-jp="博士課程 · 情報科学">3rd Year CS PhD</div>
+      <div class="profile-role" id="phd-role">
+        <span data-en="3rd Year CS PhD" data-jp="博士課程 · 情報科学">3rd Year CS PhD</span>
+        <span class="comp-icon-wrap" id="comp-trigger">
+          <svg id="comp-svg" width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- main body (shortened bottom) -->
+            <rect x="0.6" y="0.6" width="14.8" height="17.8" rx="2" fill="#e8e2d4" stroke="#0a0a0a" stroke-width="1.1"/>
+            <!-- screen bezel (recessed dark surround) -->
+            <rect x="2" y="1.8" width="12" height="11.2" rx="1" fill="#c0b8ac" stroke="#0a0a0a" stroke-width="0.6"/>
+            <!-- screen -->
+            <rect id="comp-screen" x="3" y="2.7" width="10" height="9.4" rx="0.4" fill="#181818"/>
+            <!-- screen shine -->
+            <rect id="comp-shine" x="3" y="2.7" width="10" height="3.5" rx="0.4" fill="rgba(255,255,255,0)"/>
+            <!-- disk drive slot (shifted right) -->
+            <rect x="7" y="14.8" width="6" height="1.1" rx="0.4" fill="#a09890" stroke="#0a0a0a" stroke-width="0.5"/>
+            <!-- disk eject button -->
+            <rect x="11.2" y="14.9" width="1" height="0.9" rx="0.2" fill="#888"/>
+            <!-- vent slits (right side) -->
+            <line x1="13" y1="5"   x2="14.2" y2="5"   stroke="#ccc6b8" stroke-width="0.65"/>
+            <line x1="13" y1="6.4" x2="14.2" y2="6.4" stroke="#ccc6b8" stroke-width="0.65"/>
+            <line x1="13" y1="7.8" x2="14.2" y2="7.8" stroke="#ccc6b8" stroke-width="0.65"/>
+            <line x1="13" y1="9.2" x2="14.2" y2="9.2" stroke="#ccc6b8" stroke-width="0.65"/>
+            <line x1="13" y1="10.6" x2="14.2" y2="10.6" stroke="#ccc6b8" stroke-width="0.65"/>
+          </svg>
+        </span>
+      </div>
       <div class="profile-affil">
         <!-- Hovering over the entire row (text + box) toggles the light -->
         <span class="cornell-trigger" id="cornell-trigger">
@@ -1087,10 +1098,16 @@
 
     <!-- ABOUT VIEW -->
     <div class="view" id="view-about">
+      <!-- Tennis ball overlay (covers full about view; pointer-events:none so content is still clickable) -->
+      <div class="tennis-sim-wrap" id="tennis-sim-wrap">
+        <canvas id="tennis-canvas"></canvas>
+        <div class="tennis-dog-cursor" id="tennis-dog-cursor">🐕</div>
+      </div>
+
       <div class="section-header">
-        <h1 data-en="About" data-jp="自己紹介">About</h1>
+        <h1 data-en="Hello!" data-jp="自己紹介">Hello!</h1>
         <div class="about-lizard" id="about-lizard">
-          <video id="lizard-video" src="white_lizard.mp4" muted playsinline preload="auto"></video>
+          <video id="lizard-video" src="white_lizard2.mp4" muted playsinline preload="auto"></video>
         </div>
       </div>
       <div class="about-body">
@@ -1102,9 +1119,9 @@
              data-jp="おちんぽ。">
             I'm a third year PhD student at Cornell advised by Abe Davis. I received my bachlor's from UCLA with a double major in computer engineering and math. My research focuses at the intersection of computer vision, graphics, and HCI.
           </p>
-          <p data-en="Outside of research, I play tennis and violin! I also like dogs. "
+          <p data-en="Outside of research, I play tennis and violin! I also really like dogs. During my last year of undergrad, I studied at Tohoku University in Japan where I was part of a bluegrass band! "
              data-jp="あ">
-            Outside of research, I play tennis and violin! I also like dogs. During my last year of undergrad, I studied at Tohoku University in Japan where I was part of a bluegrass band! 
+            Outside of research, I play tennis and violin! I also really like dogs. During my last year of undergrad, I studied at Tohoku University in Japan where I was part of a bluegrass band! 
           </p>
         </div>
 
@@ -1299,6 +1316,208 @@ applyPubFilter();
   img.src = 'headshot.jpg';
 })();
 
+/* ── Tennis ball physics simulation ── */
+(function () {
+  const wrap      = document.getElementById('tennis-sim-wrap');
+  const canvas    = document.getElementById('tennis-canvas');
+  const dogCursor = document.getElementById('tennis-dog-cursor');
+  const aboutView = document.getElementById('view-about');
+  if (!wrap || !canvas || !aboutView) return;
+
+  const ctx = canvas.getContext('2d');
+  const DPR = window.devicePixelRatio || 1;
+  let W = 0, H = 0;
+
+  const GRAVITY  = 0.35;
+  const BOUNCE   = 0.82;
+  const FRICTION = 0.995;
+  const FLOOR_F  = 0.97;
+  const REPEL_R  = 100;
+  const REPEL_F  = 5;    // gentler repulsion
+  const N        = 14;
+  const BALL_R   = 20;
+  const FONT_SZ  = BALL_R * 2;
+
+  let mouse   = { x: -9999, y: -9999, inside: false };
+  let balls   = [];
+  let started = false;
+  let hsRect  = null;   // headshot obstacle rect
+
+  function initCanvas(w, h) {
+    W = w; H = h;
+    canvas.width  = W * DPR;
+    canvas.height = H * DPR;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+
+  function seedBalls() {
+    // Find the bottom edge of the headshot, relative to the about view,
+    // so balls only spawn below it.
+    let minY = H * 0.45; // fallback if headshot isn't measurable yet
+    const hs = document.getElementById('headshot-canvas');
+    if (hs && aboutView) {
+      const hr = hs.getBoundingClientRect();
+      const ar = aboutView.getBoundingClientRect();
+      minY = hr.bottom - ar.top + BALL_R * 0.5;
+    }
+    minY = Math.min(minY, H - BALL_R * 3); // keep at least a little room
+
+    balls = Array.from({ length: N }, () => ({
+      x:     BALL_R + Math.random() * (W - BALL_R * 2),
+      y:     minY + Math.random() * (H - minY - BALL_R),
+      vx:    (Math.random() - 0.5) * 3,
+      vy:    (Math.random() - 0.5) * 3,
+      r:     BALL_R,
+      angle: Math.random() * Math.PI * 2,
+    }));
+  }
+
+  // Update headshot rect relative to the about view
+  function updateHsRect() {
+    const hs = document.getElementById('headshot-canvas');
+    if (!hs || !aboutView) { hsRect = null; return; }
+    const hr = hs.getBoundingClientRect();
+    const ar = aboutView.getBoundingClientRect();
+    hsRect = { x: hr.left - ar.left, y: hr.top - ar.top, w: hr.width, h: hr.height };
+  }
+
+  // Bounce a ball off an axis-aligned rect
+  function collideBallRect(b, r) {
+    if (!r) return;
+    const cx   = Math.max(r.x, Math.min(b.x, r.x + r.w));
+    const cy   = Math.max(r.y, Math.min(b.y, r.y + r.h));
+    const dx   = b.x - cx, dy = b.y - cy;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist >= b.r || dist < 0.001) return;
+    const nx = dx / dist, ny = dy / dist;
+    // push out
+    b.x = cx + nx * b.r;
+    b.y = cy + ny * b.r;
+    // reflect
+    const dot = b.vx * nx + b.vy * ny;
+    if (dot < 0) {
+      b.vx -= 2 * dot * nx * BOUNCE;
+      b.vy -= 2 * dot * ny * BOUNCE;
+    }
+  }
+
+  function collide(a, b) {
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const min  = a.r + b.r;
+    if (dist >= min || dist < 0.001) return;
+    const nx = dx / dist, ny = dy / dist;
+    const sep = (min - dist) * 0.5;
+    a.x -= nx * sep; a.y -= ny * sep;
+    b.x += nx * sep; b.y += ny * sep;
+    const dvx = b.vx - a.vx, dvy = b.vy - a.vy;
+    const dot = dvx * nx + dvy * ny;
+    if (dot >= 0) return;
+    const imp = dot * BOUNCE;
+    a.vx += imp * nx; a.vy += imp * ny;
+    b.vx -= imp * nx; b.vy -= imp * ny;
+  }
+
+  function step() {
+    updateHsRect();
+    balls.forEach(b => {
+      b.vy += GRAVITY;
+
+      if (mouse.inside) {
+        const dx = b.x - mouse.x, dy = b.y - mouse.y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < REPEL_R && d > 0) {
+          const f = (1 - d / REPEL_R) * REPEL_F;
+          b.vx += (dx / d) * f;
+          b.vy += (dy / d) * f;
+        }
+      }
+
+      b.vx *= FRICTION; b.vy *= FRICTION;
+      b.x  += b.vx;    b.y  += b.vy;
+      b.angle += b.vx / b.r;
+
+      // canvas walls
+      if (b.x - b.r < 0) { b.x = b.r;     b.vx =  Math.abs(b.vx) * BOUNCE; }
+      if (b.x + b.r > W) { b.x = W - b.r; b.vx = -Math.abs(b.vx) * BOUNCE; }
+      if (b.y - b.r < 0) { b.y = b.r;     b.vy =  Math.abs(b.vy) * BOUNCE; }
+      if (b.y + b.r > H) {
+        b.y  = H - b.r;
+        b.vy = -Math.abs(b.vy) * BOUNCE;
+        b.vx *= FLOOR_F;
+        if (Math.abs(b.vy) < 0.5) b.vy = 0;
+      }
+
+      // headshot obstacle — bounce off, but only if ball is below the headshot top
+      // (balls can freely pass above/through the text column)
+      if (hsRect && b.y + b.r > hsRect.y) {
+        collideBallRect(b, hsRect);
+      }
+    });
+
+    for (let i = 0; i < balls.length - 1; i++)
+      for (let j = i + 1; j < balls.length; j++)
+        collide(balls[i], balls[j]);
+  }
+
+  function drawBall(b) {
+    ctx.save();
+    ctx.translate(b.x, b.y);
+    ctx.rotate(b.angle);
+    ctx.font = FONT_SZ + 'px serif';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🎾', 0, 0);
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    balls.forEach(drawBall);
+  }
+
+  function loop() { step(); draw(); requestAnimationFrame(loop); }
+
+  // Defer init until about view becomes visible (display: none → block)
+  const ro = new ResizeObserver(entries => {
+    for (const e of entries) {
+      const nw = Math.round(e.contentRect.width);
+      const nh = Math.round(e.contentRect.height);
+      if (!nw || !nh) continue;
+      if (!started) {
+        initCanvas(nw, nh);
+        seedBalls();
+        started = true;
+        loop();
+      } else {
+        const sx = nw / W;
+        initCanvas(nw, nh);
+        balls.forEach(b => { b.x = Math.min(b.x * sx, W - b.r); });
+      }
+    }
+  });
+  ro.observe(wrap);
+
+  // Mouse tracked on the about view itself (canvas has pointer-events:none)
+  aboutView.addEventListener('mousemove', e => {
+    const r  = aboutView.getBoundingClientRect();
+    mouse.x  = e.clientX - r.left;
+    mouse.y  = e.clientY - r.top;
+    mouse.inside = true;
+    if (dogCursor) {
+      dogCursor.style.left    = mouse.x + 'px';
+      dogCursor.style.top     = mouse.y + 'px';
+      dogCursor.style.opacity = '1';
+    }
+  });
+  aboutView.addEventListener('mouseleave', () => {
+    mouse.inside = false;
+    if (dogCursor) dogCursor.style.opacity = '0';
+  });
+})();
+
 /* ── Dark mode (Pixar lamp) toggle ── */
 const darkToggle = document.getElementById('dark-toggle');
 let isDark = false;
@@ -1382,25 +1601,31 @@ jpBtn.addEventListener('click', () => {
   const lizard = document.getElementById('about-lizard');
   const video  = document.getElementById('lizard-video');
 
+  function seekToMid(cb) {
+    const seek = () => { video.currentTime = video.duration / 2; if (cb) cb(); };
+    if (video.readyState >= 1) seek();
+    else video.addEventListener('loadedmetadata', seek, { once: true });
+  }
+
   function slideIn() {
     const h1 = lizard.closest('.section-header').querySelector('h1');
     const h1Rect = h1.getBoundingClientRect();
     const headerRect = lizard.parentElement.getBoundingClientRect();
     lizard.style.left = (h1Rect.right - headerRect.left + 12) + 'px';
-    video.currentTime = 0;
+    seekToMid(() => video.play());
     lizard.classList.add('visible');
   }
   function slideOut() {
     lizard.classList.remove('visible');
   }
 
-  // Start playing once fully slid in; reset once fully slid out
+  // Start playing once fully slid in; reset to midpoint once fully slid out
   lizard.addEventListener('transitionend', () => {
     if (lizard.classList.contains('visible')) {
       video.play();
     } else {
       video.pause();
-      video.currentTime = 0;
+      seekToMid();
     }
   });
 
@@ -1445,11 +1670,12 @@ jpBtn.addEventListener('animationend', function () {
   const SPEED  = 0.055; // fraction per frame (~18 frames for full draw)
 
   function getRect() {
-    const bw = btn.offsetWidth, bh = btn.offsetHeight;
+    const bw = 32, bh = 22;
     return { x: 30 - bw / 2, y: 22 - bh / 2, w: bw, h: bh };
   }
 
   function draw() {
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, 60, 44);
     if (endFrac <= 0) return;
     const { x, y, w, h } = getRect();
@@ -1469,7 +1695,7 @@ jpBtn.addEventListener('animationend', function () {
       ctx.lineTo(x1 + (x2-x1)*t, y1 + (y2-y1)*t);
     }
     ctx.strokeStyle = document.body.classList.contains('dark') ? '#e8e4dc' : '#0a0a0a';
-    ctx.lineWidth   = 2;
+    ctx.lineWidth   = 1.5;
     ctx.lineCap     = 'square';
     ctx.stroke();
   }
@@ -1490,12 +1716,12 @@ jpBtn.addEventListener('animationend', function () {
   function startAnim() { if (!rafId) rafId = requestAnimationFrame(tick); }
 
   btn.addEventListener('mouseenter', () => {
-    target = isJP ? 0 : 1; // hover while locked → recede CCW; else draw CW
+    target = isJP ? 0 : 1;
     startAnim();
   });
 
   btn.addEventListener('mouseleave', () => {
-    target = isJP ? 1 : 0; // locked → restore; else retract
+    target = isJP ? 1 : 0;
     startAnim();
   });
 
@@ -1514,9 +1740,7 @@ jpBtn.addEventListener('animationend', function () {
 /* ── Train animation ── */
 (function () {
   const TRAINS     = Array.from({ length: 6 }, (_, i) => `trains/train${i + 1}.png`);
-  const TUNNEL_W   = 56;  // SVG width
-  const ARCH_RIGHT = 44;  // right wall of the arch fill in SVG x-coords
-  const TRAIN_H    = 34;
+const TRAIN_H    = 34;
   const SPEED      = 580;
   let trainIdx = 0;
   let running  = false;
@@ -1525,9 +1749,6 @@ jpBtn.addEventListener('animationend', function () {
   const nameEl  = document.querySelector('.topbar-name');
   const lampBtn = document.getElementById('dark-toggle');
   const stage   = document.getElementById('train-stage');
-  const tunnelL = document.getElementById('train-tunnel-left');
-  const tunnelR = document.getElementById('train-tunnel-right');
-
   nameEl.addEventListener('click', fireTrain);
 
   function fireTrain() {
@@ -1538,19 +1759,11 @@ jpBtn.addEventListener('animationend', function () {
     const nameRect   = nameEl.getBoundingClientRect();
     const lampRect   = lampBtn.getBoundingClientRect();
 
-    const nameRight  = nameRect.right - topbarRect.left;
-    const tunnelLeft = lampRect.left - topbarRect.left - TUNNEL_W - 6;
+    const nameRight = nameRect.right - topbarRect.left;
 
-    // Stage left edge: train slides out from behind the name.
-    // Stage right edge: clips at the arch's right wall (tunnelLeft + ARCH_RIGHT).
+    // Stage spans from the name's right edge to the lamp's left edge
     stage.style.left  = nameRight + 'px';
-    stage.style.right = (topbarRect.width - tunnelLeft - ARCH_RIGHT) + 'px';
-
-    // Position both halves, collapsed to a vertical line at the center seam
-    tunnelL.style.transition = tunnelR.style.transition = '';
-    tunnelL.style.transform  = tunnelR.style.transform  = 'scaleX(0)';
-    tunnelL.style.left       = tunnelR.style.left       = tunnelLeft + 'px';
-    tunnelL.style.display    = tunnelR.style.display    = 'block';
+    stage.style.right = (topbarRect.width - (lampRect.left - topbarRect.left)) + 'px';
 
     // Build train element
     const img = document.createElement('img');
@@ -1565,33 +1778,20 @@ jpBtn.addEventListener('animationend', function () {
       img.style.transform  = 'translate(0,-50%)';
       img.style.transition = '';
 
-      // Travel until left edge reaches the arch's right wall — fully clipped
-      const stageWidth = tunnelLeft + ARCH_RIGHT - nameRight;
-      const dist = stageWidth + trainDisplayW;
+      const stageEl    = stage.getBoundingClientRect();
+      const dist = stageEl.width + trainDisplayW;
       const dur  = dist / SPEED;
 
-      // Double rAF: first frame commits the initial states (scaleX(0), train position),
-      // second frame starts both animations simultaneously.
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        tunnelL.style.transition = tunnelR.style.transition = 'transform 0.18s cubic-bezier(0.34,1.56,0.64,1)';
-        tunnelL.style.transform  = tunnelR.style.transform  = 'scaleX(1)';
         img.style.transition = `transform ${dur}s linear`;
         img.style.transform  = `translate(${dist}px,-50%)`;
       }));
 
-      // After animation, collapse arch back to center seam and clean up
       setTimeout(() => {
-        tunnelL.style.transition = tunnelR.style.transition = 'transform 0.12s ease-in';
-        tunnelL.style.transform  = tunnelR.style.transform  = 'scaleX(0)';
-        setTimeout(() => {
-          img.remove();
-          tunnelL.style.display    = tunnelR.style.display    = 'none';
-          tunnelL.style.transform  = tunnelR.style.transform  = '';
-          tunnelL.style.transition = tunnelR.style.transition = '';
-          stage.style.left  = '';
-          stage.style.right = '';
-          running = false;
-        }, 130);
+        img.remove();
+        stage.style.left  = '';
+        stage.style.right = '';
+        running = false;
       }, dur * 1000 + 60);
     };
 
