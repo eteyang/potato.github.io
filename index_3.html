@@ -1434,10 +1434,11 @@ jpBtn.addEventListener('animationend', function () {
 
 /* ── Train animation ── */
 (function () {
-  const TRAINS  = Array.from({ length: 6 }, (_, i) => `trains/train${i + 1}.png`);
-  const TUNNEL_W = 56;
-  const TRAIN_H  = 34;   // CSS display height (px)
-  const SPEED    = 580;  // px/s — 2× original
+  const TRAINS     = Array.from({ length: 6 }, (_, i) => `trains/train${i + 1}.png`);
+  const TUNNEL_W   = 56;  // SVG width
+  const ARCH_RIGHT = 44;  // right wall of the arch fill in SVG x-coords
+  const TRAIN_H    = 34;
+  const SPEED      = 580;
   let trainIdx = 0;
   let running  = false;
 
@@ -1459,18 +1460,18 @@ jpBtn.addEventListener('animationend', function () {
     const lampRect   = lampBtn.getBoundingClientRect();
 
     const nameRight  = nameRect.right - topbarRect.left;
-    // Arch portal sits just left of the lamp
     const tunnelLeft = lampRect.left - topbarRect.left - TUNNEL_W - 6;
 
-    // Stage spans nameRight → tunnelLeft+TUNNEL_W
-    // Left edge clips the train until it slides out from behind the name.
-    // Right edge clips the train as it disappears fully into the arch.
+    // Stage left edge: train slides out from behind the name.
+    // Stage right edge: clips at the arch's right wall (tunnelLeft + ARCH_RIGHT).
     stage.style.left  = nameRight + 'px';
-    stage.style.right = (topbarRect.width - tunnelLeft - TUNNEL_W) + 'px';
+    stage.style.right = (topbarRect.width - tunnelLeft - ARCH_RIGHT) + 'px';
 
-    // Both arch halves at the same left position; CSS z-index handles layering
-    tunnelL.style.left = tunnelR.style.left = tunnelLeft + 'px';
-    tunnelL.style.display = tunnelR.style.display = 'block';
+    // Position both halves, collapsed to a vertical line at the center seam
+    tunnelL.style.transition = tunnelR.style.transition = '';
+    tunnelL.style.transform  = tunnelR.style.transform  = 'scaleX(0)';
+    tunnelL.style.left       = tunnelR.style.left       = tunnelLeft + 'px';
+    tunnelL.style.display    = tunnelR.style.display    = 'block';
 
     // Build train element
     const img = document.createElement('img');
@@ -1480,33 +1481,38 @@ jpBtn.addEventListener('animationend', function () {
     img.onload = function () {
       const trainDisplayW = img.naturalWidth * (TRAIN_H / img.naturalHeight);
 
-      // Start fully hidden: left edge is trainDisplayW behind stage's left edge (behind the name)
-      img.style.left      = (-trainDisplayW) + 'px';
-      img.style.transform = 'translate(0,-50%)';
+      // Start fully hidden behind the name (left of stage's left edge)
+      img.style.left       = (-trainDisplayW) + 'px';
+      img.style.transform  = 'translate(0,-50%)';
+      img.style.transition = '';
 
-      // End: left edge reaches stage's right boundary — train fully swallowed by arch
-      const stageWidth = tunnelLeft + TUNNEL_W - nameRight;
+      // Travel until left edge reaches the arch's right wall — fully clipped
+      const stageWidth = tunnelLeft + ARCH_RIGHT - nameRight;
       const dist = stageWidth + trainDisplayW;
       const dur  = dist / SPEED;
 
-      void img.offsetWidth; // force reflow so baseline transform is set
+      // Double rAF: first frame commits the initial states (scaleX(0), train position),
+      // second frame starts both animations simultaneously.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        tunnelL.style.transition = tunnelR.style.transition = 'transform 0.18s cubic-bezier(0.34,1.56,0.64,1)';
+        tunnelL.style.transform  = tunnelR.style.transform  = 'scaleX(1)';
+        img.style.transition = `transform ${dur}s linear`;
+        img.style.transform  = `translate(${dist}px,-50%)`;
+      }));
 
-      img.style.transition = `transform ${dur}s linear`;
-      img.style.transform  = `translate(${dist}px,-50%)`;
-
-      // After animation, fade both halves and clean up
+      // After animation, collapse arch back to center seam and clean up
       setTimeout(() => {
-        tunnelL.style.transition = tunnelR.style.transition = 'opacity 0.18s';
-        tunnelL.style.opacity    = tunnelR.style.opacity    = '0';
+        tunnelL.style.transition = tunnelR.style.transition = 'transform 0.12s ease-in';
+        tunnelL.style.transform  = tunnelR.style.transform  = 'scaleX(0)';
         setTimeout(() => {
           img.remove();
           tunnelL.style.display    = tunnelR.style.display    = 'none';
-          tunnelL.style.opacity    = tunnelR.style.opacity    = '1';
+          tunnelL.style.transform  = tunnelR.style.transform  = '';
           tunnelL.style.transition = tunnelR.style.transition = '';
           stage.style.left  = '';
           stage.style.right = '';
           running = false;
-        }, 200);
+        }, 130);
       }, dur * 1000 + 60);
     };
 
