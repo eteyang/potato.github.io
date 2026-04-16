@@ -613,20 +613,26 @@
       display: flex;
       align-items: flex-start;
     }
-    .about-headshot {
+    .about-left-col {
+      display: flex;
+      flex-direction: column;
       flex-shrink: 0;
+      width: 240px;
+      /* border-right: var(--border);
+      border-bottom: var(--border); */
+    }
+    .about-headshot {
       width: 240px;
       overflow: hidden;
       cursor: crosshair;
-      border-right: var(--border);
       border-bottom: var(--border);
+      border-right: var(--border);
     }
     #headshot-canvas { display: block; width: 240px; height: 240px; }
     .about-body .text-section { flex: 1; }
 
     /* ── More photos gallery ── */
     .gallery-toggle-wrap {
-      width: 240px;
       padding: 0px 0;
       text-align: center;
     }
@@ -638,11 +644,15 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 0;
+      padding: 4px 12px 5px;
       font-family: inherit;
-      transition: color 0.15s;
+      transition: color 0.15s, background 0.15s;
+      width: 100%;
+      box-sizing: border-box;
     }
-    .gallery-toggle:hover { color: var(--black); }
+    .gallery-toggle:hover,
+    .gallery-toggle.open { background: var(--black); color: var(--white); }
+    .gallery-toggle.open.hover-ready:hover { background: var(--white); color: var(--black); border-right: var(--border)}
 
     .photo-gallery-outer {
       width: 100%;
@@ -650,14 +660,13 @@
       max-height: 0;
       transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .photo-gallery-outer.open { max-height: 340px; }
+    .photo-gallery-outer.open { max-height: 400px; }
 
     .photo-gallery-inset {
       width: 100%;
       box-sizing: border-box;
-      background: white;
-      box-shadow: inset 0px 0px 1px rgba(0,0,0,0.6), inset 0 0px 10px rgba(0,0,0,0.35);
-      padding: 28px 2.5rem;
+      background: var(--white);
+      padding: 0px 0;
       overflow-x: auto;
       overflow-y: visible;
       scrollbar-width: none;
@@ -666,33 +675,49 @@
 
     .photo-gallery-inner {
       display: flex;
-      gap: 200px;
+      gap: 0;
       width: max-content;
     }
 
     .photo-item {
       position: relative;
-      width: 190px;
-      height: 250px;
+      height: 316px;
       flex-shrink: 0;
       overflow: hidden;
       background: #2c2c2c;
+      border-right: var(--border);
+      border-top: var(--border);
+      border-bottom: var(--border);
+      /* filter: grayscale(100%); */
     }
+    .photo-item:first-child { width: 240px; }
+    .photo-item:first-child img { width: 100%; height: 100%; object-fit: cover; }
     .photo-item img {
+      height: 100%;
+      width: auto;
+      display: block;
+    }
+    .photo-item-swap { position: relative; width: 237px; }
+    .photo-item-swap .photo-swap-a,
+    .photo-item-swap .photo-swap-b {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
+      transition: opacity 0.25s;
     }
+    .photo-item-swap .photo-swap-b { opacity: 0; }
+    .photo-item-swap:hover .photo-swap-b { opacity: 1; }
     .photo-caption {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      padding: 9px 12px;
+      padding: 28px 12px 9px;
       color: white;
-      mix-blend-mode: difference;
+      background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7));
       font-size: 10px;
       letter-spacing: 0.09em;
-      text-transform: uppercase;
+      /* text-transform: uppercase; */
       transform: translateY(100%);
       transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
@@ -701,10 +726,11 @@
 
     @media (max-width: 700px) {
       body { overflow: auto; }
-      .layout { grid-template-columns: 1fr; height: auto; }
+      .layout { grid-template-columns: minmax(0, 1fr); height: auto; }
       .sidebar { height: auto; }
       .main { height: auto; overflow: visible; }
       .about-body { flex-direction: column; }
+      .about-left-col { width: 100%; border-right: none; border-bottom: var(--border); }
       .about-headshot { width: 100%; height: auto; }
       #headshot-canvas { width: 100%; height: auto; }
     }
@@ -1297,8 +1323,13 @@
         </div>
       </div>
       <div class="about-body">
-        <div class="about-headshot">
-          <canvas id="headshot-canvas" width="240" height="240"></canvas>
+        <div class="about-left-col">
+          <div class="about-headshot">
+            <canvas id="headshot-canvas" width="240" height="240"></canvas>
+          </div>
+          <div class="gallery-toggle-wrap">
+            <button class="gallery-toggle" id="gallery-toggle">more photos + art!</button>
+          </div>
         </div>
         <div class="text-section">
           <p data-en="I'm a third year PhD student at Cornell advised by Abe Davis. I received my bachlor's from UCLA with a double major in computer engineering and math. My research focuses at the intersection of computer vision, graphics, and HCI."
@@ -1307,15 +1338,10 @@
           </p>
           <p data-en="Outside of research, I enjoy cooking, play tennis and violin! I also really like dogs. During my last year of undergrad, I studied at Tohoku University in Japan where I was part of a bluegrass band! "
              data-jp="あ">
-            Outside of research, I enjoy cooking, play tennis and violin! I also really like dogs. During my last year of undergrad, I studied at Tohoku University in Japan where I was part of a bluegrass band! 
+            Outside of research, I enjoy cooking, play tennis and violin! I also really like dogs. During my last year of undergrad, I studied at Tohoku University in Japan where I was part of a bluegrass band!
           </p>
         </div>
 
-      </div>
-
-      <!-- More photos toggle -->
-      <div class="gallery-toggle-wrap">
-        <button class="gallery-toggle" id="gallery-toggle">more photos + art!</button>
       </div>
 
       <!-- Photo gallery -->
@@ -1323,28 +1349,64 @@
         <div class="photo-gallery-inset">
           <div class="photo-gallery-inner">
             <div class="photo-item">
-              <img src="personal_photos/bob_ross.jpeg" alt="Bob Ross">
-              <div class="photo-caption">Bob Ross</div>
-            </div>
-            <div class="photo-item">
-              <img src="personal_photos/cook1.jpeg" alt="Cooking">
-              <div class="photo-caption">Cooking</div>
-            </div>
-            <div class="photo-item">
-              <img src="personal_photos/cook2.jpeg" alt="Cooking">
-              <div class="photo-caption">Cooking</div>
-            </div>
-            <div class="photo-item">
-              <img src="personal_photos/photos.jpeg" alt="">
-              <div class="photo-caption">Photos</div>
+              <img src="personal_photos/snow.JPG" alt="snow">
+              <div class="photo-caption">On top of the world!</div>
             </div>
             <div class="photo-item">
               <img src="personal_photos/sleep.jpeg" alt="">
-              <div class="photo-caption">Sleep</div>
+              <div class="photo-caption">bedtime!!!</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/bob_ross.jpeg" alt="Bob Ross">
+              <div class="photo-caption">trying to paint like Bob Ross with Procreate</div>
+            </div>
+            <div class="photo-item photo-item-swap">
+              <img class="photo-swap-a" src="personal_photos/cook1.jpeg" alt="Cooking">
+              <img class="photo-swap-b" src="personal_photos/cook2.jpeg" alt="Cooking">
+              <div class="photo-caption">let me cook</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/photos.jpeg" alt="">
+              <div class="photo-caption">taking some photos with Abe</div>
             </div>
             <div class="photo-item">
               <img src="personal_photos/steak.jpeg" alt="Steak">
-              <div class="photo-caption">Steak</div>
+              <div class="photo-caption">steak.</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/japan1.jpg" alt="japan">
+              <div class="photo-caption">Me in Japan!</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/japan2.jpg" alt="japan">
+              <div class="photo-caption">Friends in Japan!</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/apple.PNG" alt="apple">
+              <div class="photo-caption">lab apple picking</div>
+            </div>
+            <div class="photo-item photo-item-swap">
+              <img class="photo-swap-a" src="personal_photos/cow1.jpg" alt="Cow">
+              <img class="photo-swap-b" src="personal_photos/cow2.PNG" alt="Cow">
+              <div class="photo-caption">Favorite restaurant in Ithaca</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/portrait.jpg" alt="japan">
+              <div class="photo-caption">self-portrait shot on film</div>
+            </div>
+            <div class="photo-item photo-item-swap">
+              <img class="photo-swap-a" src="personal_photos/aqua1.jpg" alt="Aquarium">
+              <img class="photo-swap-b" src="personal_photos/aqua2.jpg" alt="Aquarium">
+              <div class="photo-caption">at the Vancouver aquarium!!!</div>
+            </div>
+
+            <div class="photo-item">
+              <img src="personal_photos/trash.JPG" alt="trash">
+              <div class="photo-caption">dug from the trash on dragon day</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/alpaca.JPG" alt="alpaca">
+              <div class="photo-caption">besties</div>
             </div>
           </div>
         </div>
@@ -1402,7 +1464,13 @@ cbTrigger.addEventListener('mouseleave', lightOff);
 
   btn.addEventListener('click', () => {
     const open = outer.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.classList.remove('hover-ready');
     btn.textContent = open ? 'hide' : 'more photos + art!';
+  });
+
+  btn.addEventListener('mouseleave', () => {
+    if (btn.classList.contains('open')) btn.classList.add('hover-ready');
   });
 
   // Momentum + edge-accelerated horizontal scroll
@@ -1420,7 +1488,7 @@ cbTrigger.addEventListener('mouseleave', lightOff);
     e.preventDefault();
     const edgeness   = Math.abs(mouseNorm - 0.5) * 2; // 0 at center, 1 at edges
     const multiplier = 1 + edgeness * 2;               // 1× → 3×
-    velocity += e.deltaY * multiplier;
+    velocity += e.deltaY * multiplier * 0.4;
     if (!rafId) tick();
   }, { passive: false });
 
@@ -1588,7 +1656,7 @@ applyPubFilter();
       addDrop((e.clientX - r.left) * (W / r.width), (e.clientY - r.top) * (H / r.height), 6, 200);
     });
   };
-  img.src = 'headshot.jpg';
+  img.src = 'headshot.png';
 })();
 
 /* ── Tennis ball physics simulation ── */
