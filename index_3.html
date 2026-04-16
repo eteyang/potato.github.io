@@ -139,6 +139,20 @@
     }
     .sidebar-block:last-child { border-bottom: none; }
 
+    .sidebar-contact {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .contact-link {
+      font-size: 10px;
+      color: var(--mid);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    .contact-link:hover { color: var(--black); }
+
     .block-label {
       font-size: 10px;
       font-weight: 700;
@@ -308,12 +322,12 @@
     .section-header h1 {
       font-size: 13px;
       font-weight: 100;
-      /* text-transform: uppercase; */
+      text-transform: uppercase;
       letter-spacing: 0.14em;
     }
     .section-note {
       font-size: 10px;
-      color: var(--mid);
+      color: var(--black);
       letter-spacing: 0.06em;
     }
 
@@ -328,7 +342,7 @@
       /* font-weight: 700; */
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--mid);
+      color: var(--black);
     }
     .toggle-track {
       width: 36px;
@@ -369,7 +383,7 @@
 
     .paper {
       border-bottom: var(--border);
-      padding: 1.25rem 2.5rem;
+      padding: 1.25rem calc(2.5rem + 160px) 1.25rem 2.5rem;
       position: relative;
       cursor: default;
       transition: background 0.15s,
@@ -392,7 +406,7 @@
                   background-color 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .paper-wrapper:hover .paper-tab-wrap {
-      height: 36px;
+      height: 25px;
       background-color: var(--white);
     }
     body.dark .paper-wrapper:hover .paper-tab-wrap { background-color: #1c1c1c; }
@@ -414,7 +428,7 @@
     body.dark .paper-wrapper:hover::after { background-color: #e8e4dc; }
 
     .paper-tab {
-      height: 36px;
+      height: 6px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -473,8 +487,8 @@
     }
     .paper-authors { font-size: 11px; color: var(--mid); margin-bottom: 3px; font-style: italic; text-box-trim: trim-both ex alphabetic;}
     .paper-authors strong { color: var(--black); font-style: normal; }
-    .paper-venue-full { font-size: 10px; color: var(--mid); margin-bottom: 10px; letter-spacing: 0.03em; text-box-trim: trim-end;}
-    .paper-links { display: flex; gap: 6px; flex-wrap: wrap; }
+    .paper-venue-full { font-size: 10px; color: var(--mid); margin-bottom: 1px; letter-spacing: 0.03em; text-box-trim: trim-end;}
+    .paper-links { display: flex; gap: 0px; flex-wrap: wrap; }
     .paper-link {
       font-size: 10px;
       /* padding: 3px 10px; */
@@ -496,14 +510,6 @@
     .text-section { padding: 2rem 2.5rem; max-width: 660px; }
     .text-section p { font-size: 14px; line-height: 1.95; color: var(--black); margin-bottom: 1rem; }
     .text-section p:last-child { margin-bottom: 0; }
-
-    .teach-row {
-      border: var(--border);
-      padding: 1rem 1.25rem;
-      margin-bottom: 8px;
-    }
-    .teach-row .course { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-    .teach-row .role { font-size: 11px; color: var(--mid); margin-top: 2px; }
 
     .site-footer {
       border-top: var(--border);
@@ -875,7 +881,7 @@
         </span>
       </div>
       <div class="profile-role" id="abes-group-role">
-        <span data-en="Abe's Group">Abe's Group</span><img src="imgs/labcat.png" id="labcat-icon" alt="lab cat" />
+        <a href="https://www.cs.cornell.edu/abe/group/" target="_blank" rel="noopener" data-en="Abe's Group" style="color:inherit;text-decoration:none;">Abe's Group</a><img src="imgs/labcat.png" id="labcat-icon" alt="lab cat" />
       </div>
     </div>
 
@@ -885,10 +891,18 @@
       <nav>
         <a class="nav-link active" data-view="papers" data-en="Papers" data-jp="論文">Papers</a>
         <a class="nav-link" data-view="about" data-en="About" data-jp="自己紹介">About</a>
-        <a href="cv.pdf" data-en="CV" data-jp="履歴書">CV</a>
+        <a href="https://scholar.google.com/citations?user=uy0eUjAAAAAJ&hl=en" target="_blank" rel="noopener" data-en="Scholar" data-jp="履歴書">Scholar</a>
+        <a href="Ethan_Resume.pdf" target="_blank" rel="noopener" data-en="CV" data-jp="履歴書">CV</a>
+        <a href="mailto:ethanyang@cornell.edu" data-en="EMAIL" data-jp="履歴書">EMAIL</a>
         <!-- <a class="nav-link" data-view="teaching" data-en="Teaching" data-jp="教育">Teaching</a> -->
       </nav>
     </div>
+
+    <!-- Contact links
+    <div class="sidebar-block sidebar-contact">
+      <a href="mailto:ethanyang@cornell.edu" class="contact-link">ethanyang@cornell.edu</a>
+      <a href="https://scholar.google.com/citations?user=YOUR_ID" target="_blank" rel="noopener" class="contact-link">Google Scholar</a>
+    </div> -->
 
   </aside>
 
@@ -898,7 +912,7 @@
     <!-- PUBLICATIONS VIEW -->
     <div class="view active" id="view-papers">
       <div class="section-header">
-        <h1 data-en="Papers" data-jp="論文一覧">Papers</h1>
+        <h1 id="papers-heading" data-en-selected="Selected Papers" data-en-all="All Papers" data-jp-selected="厳選論文" data-jp-all="論文一覧">Selected Papers</h1>
         <div style="display:flex;align-items:center;gap:1.5rem;">
           <span class="section-note" data-en="* equal contribution" data-jp="* 同等貢献">* equal contribution</span>
           <!-- Selected / All toggle -->
@@ -1190,6 +1204,13 @@ const pubToggle = document.getElementById('pub-toggle-track');
 let showAll = false;
 
 function applyPubFilter() {
+  const heading = document.getElementById('papers-heading');
+  if (heading) {
+    const isJP = document.documentElement.lang === 'ja';
+    heading.textContent = showAll
+      ? (isJP ? heading.dataset.jpAll      : heading.dataset.enAll)
+      : (isJP ? heading.dataset.jpSelected : heading.dataset.enSelected);
+  }
   const papers = document.querySelectorAll('.paper');
   papers.forEach(p => {
     const isSelected = p.dataset.selected === 'true';
@@ -1542,6 +1563,8 @@ jpBtn.addEventListener('click', () => {
   // document.title = isJP ? '林 アレックス' : 'Alex Lin';
   // re-split topbar name after text swap
   setTimeout(splitTopbarName, 0);
+  // re-render papers heading in new language
+  applyPubFilter();
 });
 
 /* ── Kinetic typography for topbar name ── */
