@@ -153,6 +153,62 @@
     }
     .contact-link:hover { color: var(--black); }
 
+    /* ── Email kinetic nav item ── */
+    .email-nav-wrap {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 1px 0;
+    }
+    .email-nav-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--black);
+      transition: color 0.1s;
+      cursor: pointer;
+      user-select: none;
+    }
+    .email-nav-wrap:hover .email-nav-label { color: var(--red); }
+
+    .email-address-reveal {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.03em;
+      color: var(--mid);
+      overflow: hidden;
+      white-space: nowrap;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.15s ease, opacity 0.12s;
+      cursor: pointer;
+      user-select: none;
+    }
+    .email-nav-wrap:hover .email-address-reveal {
+      max-height: 2em;
+      opacity: 1;
+    }
+    .email-address-reveal:hover { color: var(--black); }
+
+    /* Cursor tooltip */
+    .email-cursor-tip {
+      position: fixed;
+      pointer-events: none;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--black);
+      color: var(--white);
+      padding: 2px 6px 3px;
+      opacity: 0;
+      transform: translate(12px, 8px);
+      transition: opacity 0.12s;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+    .email-cursor-tip.visible { opacity: 1; }
+    body.dark .email-cursor-tip { background: var(--white); color: #0a0a0a; }
+
     .block-label {
       font-size: 10px;
       font-weight: 700;
@@ -893,7 +949,10 @@
         <a class="nav-link" data-view="about" data-en="About" data-jp="自己紹介">About</a>
         <a href="https://scholar.google.com/citations?user=uy0eUjAAAAAJ&hl=en" target="_blank" rel="noopener" data-en="Scholar" data-jp="履歴書">Scholar</a>
         <a href="Ethan_Resume.pdf" target="_blank" rel="noopener" data-en="CV" data-jp="履歴書">CV</a>
-        <a href="mailto:ethanyang@cornell.edu" data-en="EMAIL" data-jp="履歴書">EMAIL</a>
+        <div class="email-nav-wrap" id="email-nav-wrap">
+          <span class="email-nav-label" id="email-nav-label" data-en="EMAIL" data-jp="メール">EMAIL</span>
+          <span class="email-address-reveal" id="email-address-reveal"></span>
+        </div>
         <!-- <a class="nav-link" data-view="teaching" data-en="Teaching" data-jp="教育">Teaching</a> -->
       </nav>
     </div>
@@ -1161,6 +1220,8 @@
 
   </main>
 </div>
+
+<div class="email-cursor-tip" id="email-cursor-tip"></div>
 
 <script>
 /* ── SPA navigation ── */
@@ -1821,6 +1882,55 @@ const TRAIN_H    = 34;
     img.src = TRAINS[trainIdx % TRAINS.length];
     trainIdx++;
   }
+})();
+
+/* ── Email kinetic typography ── */
+(function () {
+  const wrap    = document.getElementById('email-nav-wrap');
+  const label   = document.getElementById('email-nav-label');
+  const address = document.getElementById('email-address-reveal');
+  const tip     = document.getElementById('email-cursor-tip');
+  const EMAIL   = 'ethanyang@cornell.edu';
+  let typeTimer = null;
+
+  function startType() {
+    clearInterval(typeTimer);
+    address.textContent = '';
+    let i = 0;
+    typeTimer = setInterval(() => {
+      if (i < EMAIL.length) address.textContent += EMAIL[i++];
+      else clearInterval(typeTimer);
+    }, 14);
+  }
+
+  document.addEventListener('mousemove', e => {
+    tip.style.left = e.clientX + 'px';
+    tip.style.top  = e.clientY + 'px';
+  });
+
+  wrap.addEventListener('mouseenter', () => {
+    startType();
+    tip.textContent = 'SEND';
+    tip.classList.add('visible');
+  });
+
+  wrap.addEventListener('mouseleave', () => {
+    clearInterval(typeTimer);
+    tip.classList.remove('visible');
+    setTimeout(() => { address.textContent = ''; }, 150);
+  });
+
+  address.addEventListener('mouseenter', () => { tip.textContent = 'COPY'; });
+  label.addEventListener('mouseenter',   () => { tip.textContent = 'SEND'; });
+
+  label.addEventListener('click', () => { window.location.href = 'mailto:' + EMAIL; });
+
+  address.addEventListener('click', () => {
+    navigator.clipboard.writeText(EMAIL).then(() => {
+      tip.textContent = 'COPIED!';
+      setTimeout(() => { if (tip.classList.contains('visible')) tip.textContent = 'COPY'; }, 1200);
+    });
+  });
 })();
 </script>
 </body>
