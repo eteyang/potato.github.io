@@ -1094,7 +1094,7 @@
         <div class="year-strip"><span>2023</span></div>
 
         <div class="paper-wrapper">
-          <div class="paper-img-placeholder c5"><span>Fig. 5</span></div>
+          <div class="paper-img-placeholder c5"><img src="paper_figures/diff_geo.png" alt="Enhancing Diffusion Models figure" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
           <div class="paper" data-selected="false">
             <div class="paper-content">
               <div class="paper-title">
@@ -1136,8 +1136,11 @@
           </div>
         </div>
 
-        <div class="paper-wrapper">
-          <div class="paper-img-placeholder c4"><span>Fig. 4</span></div>
+        <div class="paper-wrapper" id="rsf-wrapper">
+          <div class="paper-img-placeholder c4 paper-img-blend">
+            <img class="blend-img" id="rsf-img-a" src="paper_figures/well1.png" alt="Rapid Stain-Free figure A">
+            <img class="blend-img" id="rsf-img-b" src="paper_figures/well2.png" alt="Rapid Stain-Free figure B">
+          </div>
           <div class="paper" data-selected="false">
             <div class="paper-content">
               <div class="paper-title">
@@ -1910,6 +1913,7 @@ const TRAIN_H    = 34;
     { wrapperId: 'fgd-wrapper', imgBId: 'fgd-img-b' },
     { wrapperId: 'njs-wrapper', imgBId: 'njs-img-b' },
     { wrapperId: 'ws-wrapper',  imgBId: 'ws-img-b'  },
+    { wrapperId: 'rsf-wrapper', imgBId: 'rsf-img-b' },
   ].forEach(({ wrapperId, imgBId }) => {
     const wrapper = document.getElementById(wrapperId);
     const imgB    = document.getElementById(imgBId);
@@ -1917,7 +1921,8 @@ const TRAIN_H    = 34;
 
     wrapper.addEventListener('mousemove', e => {
       const rect = wrapper.getBoundingClientRect();
-      imgB.style.opacity = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      const pad  = rect.width * 0.15;
+      imgB.style.opacity = Math.max(0, Math.min(1, (e.clientX - rect.left - pad) / (rect.width - pad * 2)));
     });
 
     wrapper.addEventListener('mouseleave', () => {
