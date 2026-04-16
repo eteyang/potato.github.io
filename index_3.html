@@ -173,9 +173,9 @@
 
     .email-address-reveal {
       display: block;
-      font-size: 10px;
+      font-size: 13px;
       letter-spacing: 0.03em;
-      color: var(--mid);
+      color: var(--black);
       overflow: hidden;
       white-space: nowrap;
       max-height: 0;
@@ -188,7 +188,7 @@
       max-height: 2em;
       opacity: 1;
     }
-    .email-address-reveal:hover { color: var(--black); }
+    .email-address-reveal:hover { color: var(--mid); }
 
     /* Cursor tooltip */
     .email-cursor-tip {
@@ -207,7 +207,7 @@
       white-space: nowrap;
     }
     .email-cursor-tip.visible { opacity: 1; }
-    body.dark .email-cursor-tip { background: var(--white); color: #0a0a0a; }
+    body.dark .email-cursor-tip { background: var(--white); color: var(--black); }
 
     .block-label {
       font-size: 10px;
@@ -961,7 +961,7 @@
         <a href="https://scholar.google.com/citations?user=uy0eUjAAAAAJ&hl=en" target="_blank" rel="noopener" data-en="Scholar" data-jp="履歴書">Scholar</a>
         <a href="Ethan_Resume.pdf" target="_blank" rel="noopener" data-en="CV" data-jp="履歴書">CV</a>
         <div class="email-nav-wrap" id="email-nav-wrap">
-          <span class="email-nav-label" id="email-nav-label" data-en="EMAIL" data-jp="メール">EMAIL</span>
+          <span class="email-nav-label" id="email-nav-label" data-en="MAIL" data-jp="メール">MAIL</span>
           <span class="email-address-reveal" id="email-address-reveal"></span>
         </div>
         <!-- <a class="nav-link" data-view="teaching" data-en="Teaching" data-jp="教育">Teaching</a> -->
@@ -1014,8 +1014,10 @@
           </div>
           <div class="paper-tab-wrap">
             <div class="paper-tab">
-              <a class="paper-link" href="#">Paper</a>
-              <a class="paper-link" href="#">Code</a>
+              <a href="https://www.trannhan.com/articulate/#" target="_blank" rel="noopener" class="paper-link" data-en="page" data-jp="ページ">page</a>
+              <a href="https://dl.acm.org/doi/10.1145/3706598.3713179" target="_blank" rel="noopener" class="paper-link" data-en="paper" data-jp="論文">paper</a>
+              <!-- <a href="https://github.com/jaclyngu/FilteredGuidedDiffusion" target="_blank" rel="noopener" class="paper-link" data-en="code" data-jp="コード">code</a> -->
+              <a class="paper-link" href="#" id="articulate-cite" data-en="cite" data-jp="引用">cite</a>
             </div>
           </div>
         </div>
@@ -1034,8 +1036,10 @@
           </div>
           <div class="paper-tab-wrap">
             <div class="paper-tab">
-              <a class="paper-link" href="#">Paper</a>
-              <a class="paper-link" href="#">Code</a>
+              <!-- <a href="https://www.trannhan.com/articulate/#" target="_blank" rel="noopener" class="paper-link" data-en="page" data-jp="ページ">page</a> -->
+              <a href="https://ieeexplore.ieee.org/abstract/document/10974258" target="_blank" rel="noopener" class="paper-link" data-en="paper" data-jp="論文">paper</a>
+              <!-- <a href="https://github.com/jaclyngu/FilteredGuidedDiffusion" target="_blank" rel="noopener" class="paper-link" data-en="code" data-jp="コード">code</a> -->
+              <a class="paper-link" href="#" id="baseball-cite" data-en="cite" data-jp="引用">cite</a>
             </div>
           </div>
         </div>
@@ -1062,8 +1066,10 @@
           </div>
           <div class="paper-tab-wrap">
             <div class="paper-tab">
-              <a class="paper-link" href="#">Paper</a>
-              <a class="paper-link" href="#">Code</a>
+              <a href="https://filterguideddiffusion.github.io/" target="_blank" rel="noopener" class="paper-link" data-en="page" data-jp="ページ">page</a>
+              <a href="https://dl.acm.org/doi/10.1145/3641519.3657489" target="_blank" rel="noopener" class="paper-link" data-en="paper" data-jp="論文">paper</a>
+              <a href="https://github.com/jaclyngu/FilteredGuidedDiffusion" target="_blank" rel="noopener" class="paper-link" data-en="code" data-jp="コード">code</a>
+              <a class="paper-link" href="#" id="fgd-cite" data-en="cite" data-jp="引用">cite</a>
             </div>
           </div>
         </div>
@@ -1081,9 +1087,11 @@
             </div>
           </div>
           <div class="paper-tab-wrap">
-            <div class="paper-tab">
-              <a class="paper-link" href="#">Paper</a>
-              <a class="paper-link" href="#">Code</a>
+            <div class="paper-tab"> 
+              <a href="https://www.cs.cornell.edu/abe/projects/mecapture/" target="_blank" rel="noopener" class="paper-link" data-en="page" data-jp="ページ">page</a>
+              <a href="https://dl.acm.org/doi/10.1145/3654777.3676383" target="_blank" rel="noopener" class="paper-link" data-en="paper" data-jp="論文">paper</a>
+              <a href="https://apps.apple.com/us/app/mecapture/id6739034402" target="_blank" rel="noopener" class="paper-link" data-en="app" data-jp="アプリ">app</a>
+              <a class="paper-link" href="#" id="ptl-cite" data-en="cite" data-jp="引用">cite</a>
             </div>
           </div>
         </div>
@@ -1106,9 +1114,11 @@
             </div>
           </div>
           <div class="paper-tab-wrap">
-            <div class="paper-tab">
-              <a class="paper-link" href="#">Paper</a>
-              <a class="paper-link" href="#">Code</a>
+            <div class="paper-tab"> 
+              <a href="https://visual.ee.ucla.edu/diffusionperspective.htm/" target="_blank" rel="noopener" class="paper-link" data-en="page" data-jp="ページ">page</a>
+              <a href="https://dl.acm.org/doi/abs/10.1145/3618389" target="_blank" rel="noopener" class="paper-link" data-en="paper" data-jp="論文">paper</a>
+              <a href="https://github.com/rishiu/perspective-enhanced-diffusion" target="_blank" rel="noopener" class="paper-link" data-en="code" data-jp="コード">code</a>
+              <a class="paper-link" href="#" id="3d-diff-cite" data-en="cite" data-jp="引用">cite</a>
             </div>
           </div>
         </div>
@@ -1130,8 +1140,10 @@
           </div>
           <div class="paper-tab-wrap">
             <div class="paper-tab">
-              <a class="paper-link" href="#">Paper</a>
-              <a class="paper-link" href="#">Code</a>
+              <a href="https://visual.ee.ucla.edu/wstream.htm/" target="_blank" rel="noopener" class="paper-link" data-en="page" data-jp="ページ">page</a>
+              <a href="https://openaccess.thecvf.com/content/CVPR2023/papers/Zhang_WeatherStream_Light_Transport_Automation_of_Single_Image_Deweathering_CVPR_2023_paper.pdf" target="_blank" rel="noopener" class="paper-link" data-en="paper" data-jp="論文">paper</a>
+              <a href="https://github.com/UCLA-VMG/WeatherStream" target="_blank" rel="noopener" class="paper-link" data-en="code" data-jp="コード">code</a>
+              <a class="paper-link" href="#" id="weatherstream-cite" data-en="cite" data-jp="引用">cite</a>
             </div>
           </div>
         </div>
@@ -1153,8 +1165,10 @@
           </div>
           <div class="paper-tab-wrap">
             <div class="paper-tab">
-              <a class="paper-link" href="#">Paper</a>
-              <a class="paper-link" href="#">Code</a>
+              <!-- <a href="https://visual.ee.ucla.edu/wstream.htm/" target="_blank" rel="noopener" class="paper-link" data-en="page" data-jp="ページ">page</a> -->
+              <a href="https://www.nature.com/articles/s41551-023-01057-7" target="_blank" rel="noopener" class="paper-link" data-en="paper" data-jp="論文">paper</a>
+              <!-- <a href="https://github.com/UCLA-VMG/WeatherStream" target="_blank" rel="noopener" class="paper-link" data-en="code" data-jp="コード">code</a> -->
+              <a class="paper-link" href="#" id="plaque-cite" data-en="cite" data-jp="引用">cite</a>
             </div>
           </div>
         </div>
@@ -1182,8 +1196,10 @@
           </div>
           <div class="paper-tab-wrap">
             <div class="paper-tab">
-              <a class="paper-link" href="#">Paper</a>
-              <a class="paper-link" href="#">Code</a>
+              <a href="https://visual.ee.ucla.edu/gt_rain.htm/" target="_blank" rel="noopener" class="paper-link" data-en="page" data-jp="ページ">page</a>
+              <a href="https://link.springer.com/chapter/10.1007/978-3-031-20071-7_42" target="_blank" rel="noopener" class="paper-link" data-en="paper" data-jp="論文">paper</a>
+              <a href="https://github.com/UCLA-VMG/GT-RAIN" target="_blank" rel="noopener" class="paper-link" data-en="code" data-jp="コード">code</a>
+              <a class="paper-link" href="#" id="not-just-streaks-cite" data-en="cite" data-jp="引用">cite</a>
             </div>
           </div>
         </div>
@@ -1282,6 +1298,23 @@ function lightOff() {
 
 cbTrigger.addEventListener('mouseenter', lightOn);
 cbTrigger.addEventListener('mouseleave', lightOff);
+
+/* ── Auto-scroll paper tab into view on hover ── */
+(function () {
+  document.querySelectorAll('.paper-wrapper').forEach(wrapper => {
+    let timer = null;
+    wrapper.addEventListener('mouseenter', () => {
+      // Wait for the height transition to finish, then scroll the tab into view
+      timer = setTimeout(() => {
+        const tabWrap = wrapper.querySelector('.paper-tab-wrap');
+        if (tabWrap) tabWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    });
+    wrapper.addEventListener('mouseleave', () => {
+      clearTimeout(timer);
+    });
+  });
+})();
 
 /* ── Publications toggle: Selected / All ── */
 const pubToggle = document.getElementById('pub-toggle-track');
@@ -1905,6 +1938,127 @@ const TRAIN_H    = 34;
     img.src = TRAINS[trainIdx % TRAINS.length];
     trainIdx++;
   }
+})();
+
+
+/* ── Cite buttons: copy bibtex ── */
+(function () {
+  const tip = document.getElementById('email-cursor-tip');
+  if (!tip) return;
+
+  const CITES = [
+      {
+      id: 'plaque-cite',
+      bibtex: `@article{liu2023rapid,
+  title={Rapid and stain-free quantification of viral plaque via lens-free holography and deep learning},
+  author={Liu, Tairan and Li, Yuzhu and Koydemir, Hatice Ceylan and Zhang, Yijie and Yang, Ethan and Eryilmaz, Merve and Wang, Hongda and Li, Jingxi and Bai, Bijie and Ma, Guangdong and others},
+  journal={Nature Biomedical Engineering},
+  volume={7},
+  number={8},
+  pages={1040--1052},
+  year={2023},
+  publisher={Nature Publishing Group UK London}
+}`,
+    },
+    {
+      id: 'weatherstream-cite',
+      bibtex: `@inproceedings{zhang2023weatherstream,
+  title={Weatherstream: Light transport automation of single image deweathering},
+  author={Zhang, Howard and Ba, Yunhao and Yang, Ethan and Mehra, Varan and Gella, Blake and Suzuki, Akira and Pfahnl, Arnold and Chandrappa, Chethan Chinder and Wong, Alex and Kadambi, Achuta},
+  booktitle={Proceedings of the IEEE/CVF conference on computer vision and pattern recognition},
+  pages={13499--13509},
+  year={2023}
+}`,
+    },
+    {
+      id: '3d-diff-cite',
+      bibtex: `@article{upadhyay2023enhancing,
+  title={Enhancing diffusion models with 3d perspective geometry constraints},
+  author={Upadhyay, Rishi and Zhang, Howard and Ba, Yunhao and Yang, Ethan and Gella, Blake and Jiang, Sicheng and Wong, Alex and Kadambi, Achuta},
+  journal={ACM Transactions on Graphics (TOG)},
+  volume={42},
+  number={6},
+  pages={1--15},
+  year={2023},
+  publisher={ACM New York, NY, USA}
+}`,
+    },
+    {
+      id: 'fgd-cite',
+      bibtex: `@inproceedings{gu2024filter,
+  title={Filter-guided diffusion for controllable image generation},
+  author={Gu, Zeqi and Yang, Ethan and Davis, Abe},
+  booktitle={ACM SIGGRAPH 2024 conference papers},
+  pages={1--10},
+  year={2024}
+}`,
+    },
+    {
+      id: 'articulate-cite',
+      bibtex: `@inproceedings{tran2025articulate,
+  title={ARticulate: Interactive Visual Guidance for Demonstrated Rotational Degrees of Freedom in Mobile AR},
+  author={Tran, Nhan and Yang, Ethan and Davis, Abe},
+  booktitle={Proceedings of the 2025 CHI Conference on Human Factors in Computing Systems},
+  pages={1--8},
+  year={2025}
+}
+`,
+    },
+    {
+      id: 'ptl-cite',
+      bibtex: `@inproceedings{tran2024personal,
+  title={Personal Time-Lapse},
+  author={Tran, Nhan and Yang, Ethan and Taylor, Angelique and Davis, Abe},
+  booktitle={Proceedings of the 37th Annual ACM Symposium on User Interface Software and Technology},
+  pages={1--13},
+  year={2024}
+}`,
+    },
+    {
+      id: 'not-just-streaks-cite',
+      bibtex: `@inproceedings{ba2022not,
+  title={Not just streaks: Towards ground truth for single image deraining},
+  author={Ba, Yunhao and Zhang, Howard and Yang, Ethan and Suzuki, Akira and Pfahnl, Arnold and Chandrappa, Chethan Chinder and De Melo, Celso M and You, Suya and Soatto, Stefano and Wong, Alex and others},
+  booktitle={European Conference on Computer Vision},
+  pages={723--740},
+  year={2022},
+  organization={Springer}
+}`,
+    },
+    {
+      id: 'baseball-cite',
+      bibtex: `@inproceedings{kamino2025million,
+  title={Million Eyes on the “Robot Umps”: The Case for Studying Sports in HRI Through Baseball},
+  author={Kamino, Waki and Wen-Yi, Andrea W and Agarwal, Dhruv and Hamilton, Sil and Kang, Eun Jeong and Kim, Jieun and Kusumegi, Keigo and Moradi, Pegah and Mwesigwa, Daniel and Tao, Yan and others},
+  booktitle={2025 20th ACM/IEEE International Conference on Human-Robot Interaction (HRI)},
+  pages={1383--1388},
+  year={2025},
+  organization={IEEE}
+}`,
+    },
+  ];
+
+  CITES.forEach(({ id, bibtex }) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+
+    btn.addEventListener('mouseenter', () => {
+      tip.textContent = 'COPY';
+      tip.classList.add('visible');
+    });
+
+    btn.addEventListener('mouseleave', () => {
+      tip.classList.remove('visible');
+    });
+
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      navigator.clipboard.writeText(bibtex).then(() => {
+        tip.textContent = 'COPIED!';
+        setTimeout(() => { if (tip.classList.contains('visible')) tip.textContent = 'COPY'; }, 1200);
+      });
+    });
+  });
 })();
 
 /* ── Paper image blend (mouse-x crossfade) ── */
