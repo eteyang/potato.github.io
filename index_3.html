@@ -514,6 +514,17 @@
     }
     .paper-wrapper:hover .paper-img-placeholder { transform: translateX(0); }
 
+    .paper-img-blend { padding: 0; }
+    .blend-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    #fgd-img-b { opacity: 0; }
+
     .paper-content {
       position: relative;
       z-index: 1;
@@ -990,7 +1001,7 @@
         <div class="year-strip"><span>2025</span></div>
 
         <div class="paper-wrapper">
-          <div class="paper-img-placeholder c1"><span>Fig. 1</span></div>
+          <div class="paper-img-placeholder c1"><img src="paper_figures/ar.png" alt="ARticulate figure" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
           <div class="paper" data-selected="false">
             <div class="paper-content">
               <div class="paper-title">
@@ -1010,7 +1021,7 @@
         </div>
 
         <div class="paper-wrapper">
-          <div class="paper-img-placeholder c1"><span>Fig. 1</span></div>
+          <div class="paper-img-placeholder c1"><img src="paper_figures/baseball.png" alt="Million Eyes figure" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
           <div class="paper" data-selected="false">
             <div class="paper-content">
               <div class="paper-title">
@@ -1034,8 +1045,11 @@
       <div class="year-group" data-year="2024">
         <div class="year-strip"><span>2024</span></div>
 
-        <div class="paper-wrapper">
-          <div class="paper-img-placeholder c1"><span>Fig. 1</span></div>
+        <div class="paper-wrapper" id="fgd-wrapper">
+          <div class="paper-img-placeholder c1 paper-img-blend" id="fgd-img-wrap">
+            <img class="blend-img" id="fgd-img-a" src="paper_figures/hat1.jpeg" alt="Filter-Guided Diffusion figure A">
+            <img class="blend-img" id="fgd-img-b" src="paper_figures/hat2.png" alt="Filter-Guided Diffusion figure B">
+          </div>
           <div class="paper" data-selected="true">
             <div class="paper-content">
               <div class="paper-title">
@@ -1055,7 +1069,7 @@
         </div>
 
         <div class="paper-wrapper">
-          <div class="paper-img-placeholder c2"><span>Fig. 2</span></div>
+          <div class="paper-img-placeholder c2"><img src="paper_figures/mecapture.png" alt="Personal Time-Lapse figure" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
           <div class="paper" data-selected="true">
             <div class="paper-content">
               <div class="paper-title">
@@ -1099,8 +1113,11 @@
           </div>
         </div>
 
-        <div class="paper-wrapper">
-          <div class="paper-img-placeholder c5"><span>Fig. 5</span></div>
+        <div class="paper-wrapper" id="ws-wrapper">
+          <div class="paper-img-placeholder c5 paper-img-blend">
+            <img class="blend-img" id="ws-img-a" src="paper_figures/res2_1.png" alt="Weatherstream figure A">
+            <img class="blend-img" id="ws-img-b" src="paper_figures/res2_2.png" alt="Weatherstream figure B">
+          </div>
           <div class="paper" data-selected="false">
             <div class="paper-content">
               <div class="paper-title">
@@ -1145,8 +1162,11 @@
       <div class="year-group" data-year="2022">
         <div class="year-strip"><span>2022</span></div>
 
-        <div class="paper-wrapper">
-          <div class="paper-img-placeholder c3"><span>Fig. 3</span></div>
+        <div class="paper-wrapper" id="njs-wrapper">
+          <div class="paper-img-placeholder c3 paper-img-blend">
+            <img class="blend-img" id="njs-img-a" src="paper_figures/94.jpg" alt="Not Just Streaks figure A">
+            <img class="blend-img" id="njs-img-b" src="paper_figures/94_ours.png" alt="Not Just Streaks figure B">
+          </div>
           <div class="paper" data-selected="true">
             <div class="paper-content">
               <div class="paper-title">
@@ -1882,6 +1902,28 @@ const TRAIN_H    = 34;
     img.src = TRAINS[trainIdx % TRAINS.length];
     trainIdx++;
   }
+})();
+
+/* ── Paper image blend (mouse-x crossfade) ── */
+(function () {
+  [
+    { wrapperId: 'fgd-wrapper', imgBId: 'fgd-img-b' },
+    { wrapperId: 'njs-wrapper', imgBId: 'njs-img-b' },
+    { wrapperId: 'ws-wrapper',  imgBId: 'ws-img-b'  },
+  ].forEach(({ wrapperId, imgBId }) => {
+    const wrapper = document.getElementById(wrapperId);
+    const imgB    = document.getElementById(imgBId);
+    if (!wrapper || !imgB) return;
+
+    wrapper.addEventListener('mousemove', e => {
+      const rect = wrapper.getBoundingClientRect();
+      imgB.style.opacity = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    });
+
+    wrapper.addEventListener('mouseleave', () => {
+      imgB.style.opacity = 0;
+    });
+  });
 })();
 
 /* ── Email kinetic typography ── */
