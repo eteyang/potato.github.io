@@ -50,6 +50,7 @@
       z-index: 100;
       border-bottom: var(--border);
       gap: 1.5rem;
+      overflow: hidden;
     }
 
     .topbar-name {
@@ -455,6 +456,8 @@
 
     /* Collapsing wrapper — height: 0 hides tab; expanding to 36px pushes papers below down */
     .paper-tab-wrap {
+      position: relative;
+      z-index: 3;
       height: 0;
       overflow: hidden;
       background-color: transparent;
@@ -462,10 +465,10 @@
                   background-color 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .paper-wrapper:hover .paper-tab-wrap {
-      height: 25px;
-      background-color: var(--white);
+      height: 27px;
+      padding-top: 4px;
+      background-color: transparent;
     }
-    body.dark .paper-wrapper:hover .paper-tab-wrap { background-color: #1c1c1c; }
 
     /* Bottom border lives on ::after so it sits at the wrapper's true bottom edge —
        no phantom 1px gap at height:0, and it travels with the collapsing tab */
@@ -474,6 +477,7 @@
       position: absolute;
       bottom: 0; left: 0; right: 0;
       height: 1px;
+      z-index: 3;
       background-color: transparent;
       transition: background-color 0s 0.38s; /* stay visible during collapse, snap away after */
     }
@@ -489,7 +493,7 @@
       align-items: center;
       gap: 8px;
       padding: 0 2.5rem;
-      background: var(--white);
+      background: transparent;
       transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .paper-wrapper:hover .paper-tab { transform: translateX(170px); }
@@ -502,7 +506,7 @@
       transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
       z-index: 2;
       border-right: var(--border);
-      border-bottom: var(--border);
+      /* border-bottom: var(--border); */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -555,7 +559,7 @@
     .paper-authors { font-size: 11px; color: var(--mid); margin-bottom: 3px; font-style: italic; text-box-trim: trim-both ex alphabetic;}
     .paper-authors strong { color: var(--black); font-style: normal; }
     .paper-venue-full { font-size: 10px; color: var(--mid); margin-bottom: 1px; letter-spacing: 0.03em; text-box-trim: trim-end;}
-    .paper-links { display: flex; gap: 0px; flex-wrap: wrap; }
+    .paper-links { display: flex; gap: 20px; flex-wrap: wrap; }
     .paper-link {
       font-size: 10px;
       /* padding: 3px 10px; */
@@ -594,16 +598,14 @@
     .c4 { background: #5a5050; color: #f2efe8; }
     .c5 { background: #1a1a5a; color: #f2efe8; }
 
-    /* ── White lizard header video ── */
-    #view-about .section-header { overflow: hidden; }
+    /* ── White lizard topbar video ── */
     .about-lizard {
       position: absolute;
       top: 0; bottom: 0;
       z-index: 1;
-      transform: translateY(105%);
+      transform: translateY(-105%);
       transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
-      /* border: var(--border); */
     }
     .about-lizard.visible { transform: translateY(0); }
     .about-lizard video { height: 100%; width: auto; display: block; }
@@ -637,8 +639,8 @@
       text-align: center;
     }
     .gallery-toggle {
-      font-size: 10px;
-      text-transform: uppercase;
+      font-size: 13px;
+      /* text-transform: uppercase; */
       letter-spacing: 0.12em;
       color: var(--black);
       background: none;
@@ -650,9 +652,9 @@
       width: 100%;
       box-sizing: border-box;
     }
-    .gallery-toggle:hover,
-    .gallery-toggle.open { background: var(--black); color: var(--white); }
-    .gallery-toggle.open.hover-ready:hover { background: var(--white); color: var(--black); border-right: var(--border)}
+    .gallery-toggle:hover { background: var(--black); color: var(--white); }
+    .gallery-toggle.open { background: var(--white); color: var(--black); border-right: var(--border)}
+    .gallery-toggle.open.hover-ready:hover { background: var(--black); color: var(--white); border-right: var(--border)}
 
     .photo-gallery-outer {
       width: 100%;
@@ -743,8 +745,7 @@
       --mid: #777777;
       --border: 1px solid #e8e4dc;
     }
-    body.dark .paper-wrapper:hover .paper { background: #1c1c1c; }
-    body.dark .paper-tab { background: #1c1c1c; }
+    body.dark .paper-tab { background: transparent; }
 
     /* ── Pixar lamp dark-mode toggle ── */
     .lamp-btn {
@@ -802,7 +803,7 @@
       width: auto;
       image-rendering: pixelated;
       z-index: 2;
-      filter: url(#motion-blur-h);
+      /* blur applied per-train in JS */
     }
 
     /* ── Kinetic typography ── */
@@ -944,6 +945,9 @@
 <header class="topbar">
   <div id="train-stage"></div>
   <span class="topbar-name" data-en="Ethan Yang" data-jp="イーサン・ヤン">Ethan Yang</span>
+  <div class="about-lizard" id="about-lizard">
+    <video id="lizard-video" src="white_lizard2.mp4" muted playsinline preload="auto"></video>
+  </div>
   <div class="topbar-spacer"></div>
   <button class="lamp-btn" id="dark-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
     <svg class="lamp-svg" viewBox="0 0 30 36" width="20" height="24">
@@ -984,9 +988,12 @@
 <!-- SVG filter definitions (off-screen) -->
 <svg id="train-filters" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;pointer-events:none">
   <defs>
-    <filter id="motion-blur-h" x="-50%" width="200%" y="0%" height="100%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="6 0"/>
-    </filter>
+    <filter id="blur-train1" x="-50%" width="200%" y="0%" height="100%"><feGaussianBlur in="SourceGraphic" stdDeviation="2 0"/></filter>
+    <filter id="blur-train2" x="-50%" width="200%" y="0%" height="100%"><feGaussianBlur in="SourceGraphic" stdDeviation="3 0"/></filter>
+    <filter id="blur-train3" x="-50%" width="200%" y="0%" height="100%"><feGaussianBlur in="SourceGraphic" stdDeviation="3 0"/></filter>
+    <filter id="blur-train4" x="-50%" width="200%" y="0%" height="100%"><feGaussianBlur in="SourceGraphic" stdDeviation="4 0"/></filter>
+    <filter id="blur-train5" x="-50%" width="200%" y="0%" height="100%"><feGaussianBlur in="SourceGraphic" stdDeviation="5 0"/></filter>
+    <filter id="blur-train6" x="-50%" width="200%" y="0%" height="100%"><feGaussianBlur in="SourceGraphic" stdDeviation="5 0"/></filter>
   </defs>
 </svg>
 
@@ -1058,7 +1065,7 @@
       <nav>
         <a class="nav-link active" data-view="papers" data-en="Papers" data-jp="論文">Papers</a>
         <a class="nav-link" data-view="about" data-en="About" data-jp="自己紹介">About</a>
-        <a href="https://scholar.google.com/citations?user=uy0eUjAAAAAJ&hl=en" target="_blank" rel="noopener" data-en="Scholar" data-jp="履歴書">Scholar</a>
+        <a href="https://scholar.google.com/citations?user=uy0eUjAAAAAJ&hl=en" target="_blank" rel="noopener">Scholar</a>
         <a href="Ethan_Resume.pdf" target="_blank" rel="noopener" data-en="CV" data-jp="履歴書">CV</a>
         <div class="email-nav-wrap" id="email-nav-wrap">
           <span class="email-nav-label" id="email-nav-label" data-en="MAIL" data-jp="メール">MAIL</span>
@@ -1082,12 +1089,12 @@
     <!-- PUBLICATIONS VIEW -->
     <div class="view active" id="view-papers">
       <div class="section-header">
-        <h1 id="papers-heading" data-en-selected="Selected Papers" data-en-all="All Papers" data-jp-selected="厳選論文" data-jp-all="論文一覧">Selected Papers</h1>
+        <h1 id="papers-heading" data-en-selected="Selected Papers" data-en-all="All Papers" data-jp-selected="代表論文" data-jp-all="全論文">Selected Papers</h1>
         <div style="display:flex;align-items:center;gap:1.5rem;">
           <span class="section-note" data-en="* equal contribution" data-jp="* 同等貢献">* equal contribution</span>
           <!-- Selected / All toggle -->
           <div class="pub-toggle">
-            <span class="pub-toggle-label" data-en="Selected" data-jp="厳選">Selected</span>
+            <span class="pub-toggle-label" data-en="Selected" data-jp="代表">Selected</span>
             <div class="toggle-track" id="pub-toggle-track" role="switch" aria-checked="false" tabindex="0">
               <div class="toggle-thumb"></div>
             </div>
@@ -1175,7 +1182,7 @@
         </div>
 
         <div class="paper-wrapper">
-          <div class="paper-img-placeholder c2"><img src="paper_figures/mecapture.png" alt="Personal Time-Lapse figure" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div class="paper-img-placeholder c1"><img src="paper_figures/mecapture.png" alt="Personal Time-Lapse figure" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
           <div class="paper" data-selected="true">
             <div class="paper-content">
               <div class="paper-title">
@@ -1316,28 +1323,22 @@
         <div class="tennis-dog-cursor" id="tennis-dog-cursor">🐕</div>
       </div>
 
-      <div class="section-header">
-        <h1 data-en="Hello!" data-jp="自己紹介">Hello!</h1>
-        <div class="about-lizard" id="about-lizard">
-          <video id="lizard-video" src="white_lizard2.mp4" muted playsinline preload="auto"></video>
-        </div>
-      </div>
       <div class="about-body">
         <div class="about-left-col">
           <div class="about-headshot">
             <canvas id="headshot-canvas" width="240" height="240"></canvas>
           </div>
           <div class="gallery-toggle-wrap">
-            <button class="gallery-toggle" id="gallery-toggle">more photos + art!</button>
+            <button class="gallery-toggle" id="gallery-toggle" data-en="more photos + art!" data-jp="写真・アート！">more photos + art!</button>
           </div>
         </div>
         <div class="text-section">
           <p data-en="I'm a third year PhD student at Cornell advised by Abe Davis. I received my bachlor's from UCLA with a double major in computer engineering and math. My research focuses at the intersection of computer vision, graphics, and HCI."
-             data-jp="おちんぽ。">
+             data-jp="コーネル大学のAbe Davisの指導のもと、博士課程3年生として研究を行っています。UCLAにてコンピュータ工学と数学の二重専攻で学士号を取得しました。コンピュータビジョン、グラフィックス、HCIの交差点での研究に取り組んでいます。">
             I'm a third year PhD student at Cornell advised by Abe Davis. I received my bachlor's from UCLA with a double major in computer engineering and math. My research focuses at the intersection of computer vision, graphics, and HCI.
           </p>
-          <p data-en="Outside of research, I enjoy cooking, play tennis and violin! I also really like dogs. During my last year of undergrad, I studied at Tohoku University in Japan where I was part of a bluegrass band! "
-             data-jp="あ">
+          <p data-en="Outside of research, I enjoy cooking, play tennis and violin! I also really like dogs. During my last year of undergrad, I studied at Tohoku University in Japan where I was part of a bluegrass band!"
+             data-jp="研究以外では、料理とテニスとバイオリンを楽しんでいます！犬も大好きです。学部最終年度には東北大学に留学し、ブルーグラスバンドのメンバーとして活動していました！">
             Outside of research, I enjoy cooking, play tennis and violin! I also really like dogs. During my last year of undergrad, I studied at Tohoku University in Japan where I was part of a bluegrass band!
           </p>
         </div>
@@ -1350,63 +1351,75 @@
           <div class="photo-gallery-inner">
             <div class="photo-item">
               <img src="personal_photos/snow.JPG" alt="snow">
-              <div class="photo-caption">On top of the world!</div>
+              <div class="photo-caption" data-en="On top of the world!" data-jp="世界の頂点！">On top of the world!</div>
             </div>
             <div class="photo-item">
               <img src="personal_photos/sleep.jpeg" alt="">
-              <div class="photo-caption">bedtime!!!</div>
+              <div class="photo-caption" data-en="bedtime!!!" data-jp="おやすみ!!!">bedtime!!!</div>
             </div>
             <div class="photo-item">
               <img src="personal_photos/bob_ross.jpeg" alt="Bob Ross">
-              <div class="photo-caption">trying to paint like Bob Ross with Procreate</div>
-            </div>
-            <div class="photo-item photo-item-swap">
-              <img class="photo-swap-a" src="personal_photos/cook1.jpeg" alt="Cooking">
-              <img class="photo-swap-b" src="personal_photos/cook2.jpeg" alt="Cooking">
-              <div class="photo-caption">let me cook</div>
-            </div>
-            <div class="photo-item">
-              <img src="personal_photos/photos.jpeg" alt="">
-              <div class="photo-caption">taking some photos with Abe</div>
-            </div>
-            <div class="photo-item">
-              <img src="personal_photos/steak.jpeg" alt="Steak">
-              <div class="photo-caption">steak.</div>
-            </div>
-            <div class="photo-item">
-              <img src="personal_photos/japan1.jpg" alt="japan">
-              <div class="photo-caption">Me in Japan!</div>
-            </div>
-            <div class="photo-item">
-              <img src="personal_photos/japan2.jpg" alt="japan">
-              <div class="photo-caption">Friends in Japan!</div>
-            </div>
-            <div class="photo-item">
-              <img src="personal_photos/apple.PNG" alt="apple">
-              <div class="photo-caption">lab apple picking</div>
+              <div class="photo-caption" data-en="trying to paint like Bob Ross with Procreate" data-jp="Procreateでボブ・ロスの真似して描いてみた">trying to paint like Bob Ross with Procreate</div>
             </div>
             <div class="photo-item photo-item-swap">
               <img class="photo-swap-a" src="personal_photos/cow1.jpg" alt="Cow">
               <img class="photo-swap-b" src="personal_photos/cow2.PNG" alt="Cow">
-              <div class="photo-caption">Favorite restaurant in Ithaca</div>
-            </div>
-            <div class="photo-item">
-              <img src="personal_photos/portrait.jpg" alt="japan">
-              <div class="photo-caption">self-portrait shot on film</div>
-            </div>
-            <div class="photo-item photo-item-swap">
-              <img class="photo-swap-a" src="personal_photos/aqua1.jpg" alt="Aquarium">
-              <img class="photo-swap-b" src="personal_photos/aqua2.jpg" alt="Aquarium">
-              <div class="photo-caption">at the Vancouver aquarium!!!</div>
+              <div class="photo-caption" data-en="My favorite restaurant in Ithaca!" data-jp="イサカお気に入りのレストラン！">My favorite restaurant in Ithaca!</div>
             </div>
 
             <div class="photo-item">
+              <img src="personal_photos/photos.jpeg" alt="">
+              <div class="photo-caption" data-en="taking some photos with Abe" data-jp="Abeと写真撮影">taking some photos with Abe</div>
+            </div>
+
+            <!-- <div class="photo-item">
+              <img src="personal_photos/steak.jpeg" alt="Steak">
+              <div class="photo-caption">steak.</div>
+            </div> -->
+            <!-- <div class="photo-item">
+              <img src="personal_photos/japan1.jpg" alt="japan">
+              <div class="photo-caption">Me in Japan!</div>
+            </div> -->
+            <div class="photo-item">
+              <img src="personal_photos/japan2.jpg" alt="japan">
+              <div class="photo-caption" data-en="Friends in Japan!" data-jp="日本の友達！">Friends in Japan!</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/SF.JPG" alt="SF">
+              <div class="photo-caption" data-en="SanFrancisco shot on 4x5 film" data-jp="4×5フィルムで撮ったサンフランシスコ">SanFrancisco shot on 4x5 film</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/apple.PNG" alt="apple">
+              <div class="photo-caption" data-en="lab apple picking" data-jp="研究室みんなでりんご狩り">lab apple picking</div>
+            </div>
+            <div class="photo-item photo-item-swap">
+              <img class="photo-swap-a" src="personal_photos/cook1.jpeg" alt="Cooking">
+              <img class="photo-swap-b" src="personal_photos/cook2.jpeg" alt="Cooking">
+              <div class="photo-caption" data-en="let me cook" data-jp="料理させて">let me cook</div>
+            </div>
+
+ 
+            <div class="photo-item photo-item-swap">
+              <img class="photo-swap-a" src="personal_photos/aqua1.jpg" alt="Aquarium">
+              <img class="photo-swap-b" src="personal_photos/aqua2.jpg" alt="Aquarium">
+              <div class="photo-caption" data-en="at the Vancouver aquarium!!!" data-jp="バンクーバー水族館にて!!!">at the Vancouver aquarium!!!</div>
+            </div>
+            <!-- <div class="photo-item">
+              <img src="personal_photos/tokyo.png" alt="Japan">
+              <div class="photo-caption">Photo I took of Tokyo with an iPhone!</div>
+            </div> -->
+
+            <div class="photo-item">
               <img src="personal_photos/trash.JPG" alt="trash">
-              <div class="photo-caption">dug from the trash on dragon day</div>
+              <div class="photo-caption" data-en="dug from the trash on dragon day" data-jp="ドラゴンデーにゴミ箱から発掘">dug from the trash on dragon day</div>
             </div>
             <div class="photo-item">
               <img src="personal_photos/alpaca.JPG" alt="alpaca">
-              <div class="photo-caption">besties</div>
+              <div class="photo-caption" data-en="alpaca besties" data-jp="アルパカとおともだち">alpaca besties</div>
+            </div>
+            <div class="photo-item">
+              <img src="personal_photos/portrait.jpg" alt="japan">
+              <div class="photo-caption" data-en="self-portrait shot on 35mm film" data-jp="35mmフィルムで撮った自画像">self-portrait shot on 35mm film</div>
             </div>
           </div>
         </div>
@@ -1466,7 +1479,7 @@ cbTrigger.addEventListener('mouseleave', lightOff);
     const open = outer.classList.toggle('open');
     btn.classList.toggle('open', open);
     btn.classList.remove('hover-ready');
-    btn.textContent = open ? 'hide' : 'more photos + art!';
+    btn.textContent = open ? (isJP ? '隠す' : 'hide') : (isJP ? '写真・アート！' : 'more photos + art!');
   });
 
   btn.addEventListener('mouseleave', () => {
@@ -1953,10 +1966,10 @@ jpBtn.addEventListener('click', () => {
   }
 
   function slideIn() {
-    const h1 = lizard.closest('.section-header').querySelector('h1');
-    const h1Rect = h1.getBoundingClientRect();
-    const headerRect = lizard.parentElement.getBoundingClientRect();
-    lizard.style.left = (h1Rect.right - headerRect.left + 12) + 'px';
+    const nameEl    = document.querySelector('.topbar-name');
+    const nameRect  = nameEl.getBoundingClientRect();
+    const topbarRect = lizard.parentElement.getBoundingClientRect();
+    lizard.style.left = (nameRect.right - topbarRect.left + 12) + 'px';
     seekToMid(() => video.play());
     lizard.classList.add('visible');
   }
@@ -2084,11 +2097,31 @@ jpBtn.addEventListener('animationend', function () {
 
 /* ── Train animation ── */
 (function () {
-  const TRAINS     = Array.from({ length: 6 }, (_, i) => `trains/train${i + 1}.png`);
-const TRAIN_H    = 34;
-  const SPEED      = 580;
-  let trainIdx = 0;
-  let running  = false;
+  const TRAIN_H  = 34;
+  const TRAIN_CONFIGS = [
+    { speed: 320,  blur: 'blur-train1' },
+    { speed: 460,  blur: 'blur-train2' },
+    { speed: 400,  blur: 'blur-train3' },
+    { speed: 520,  blur: 'blur-train4' },
+    { speed: 720,  blur: 'blur-train5' },
+    { speed: 820,  blur: 'blur-train6' },
+  ];
+  let running     = false;
+  let currentImg  = null;
+  let currentIdx  = 0;
+  let trainQueue  = [];
+
+  function nextTrainIdx() {
+    if (trainQueue.length === 0) {
+      // Refill with shuffled indices (Fisher-Yates)
+      trainQueue = Array.from({ length: TRAIN_CONFIGS.length }, (_, i) => i);
+      for (let i = trainQueue.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [trainQueue[i], trainQueue[j]] = [trainQueue[j], trainQueue[i]];
+      }
+    }
+    return trainQueue.pop();
+  }
 
   const topbar  = document.querySelector('.topbar');
   const nameEl  = document.querySelector('.topbar-name');
@@ -2096,36 +2129,50 @@ const TRAIN_H    = 34;
   const stage   = document.getElementById('train-stage');
   nameEl.addEventListener('click', fireTrain);
 
+  function isDark() { return document.body.classList.contains('dark'); }
+
+  // Swap image when dark mode toggles mid-run
+  lampBtn.addEventListener('click', () => {
+    if (running && currentImg) {
+      const suffix = isDark() ? '_dark' : '_day'; // dark toggle handler already ran, so isDark() reflects new state
+      currentImg.onload = null;
+      currentImg.src = `trains2/train${currentIdx + 1}${suffix}.png`;
+    }
+  });
+
   function fireTrain() {
     if (running) return;
     running = true;
+
+    currentIdx   = nextTrainIdx();
+    const config = TRAIN_CONFIGS[currentIdx];
+    const suffix = isDark() ? '_dark' : '_day';
 
     const topbarRect = topbar.getBoundingClientRect();
     const nameRect   = nameEl.getBoundingClientRect();
     const lampRect   = lampBtn.getBoundingClientRect();
 
     const nameRight = nameRect.right - topbarRect.left;
-
-    // Stage spans from the name's right edge to the lamp's left edge
     stage.style.left  = nameRight + 'px';
     stage.style.right = (topbarRect.width - (lampRect.left - topbarRect.left)) + 'px';
 
-    // Build train element
     const img = document.createElement('img');
     img.className = 'train-el';
+    img.style.filter = `url(#${config.blur})`;
     stage.appendChild(img);
+    currentImg = img;
 
     img.onload = function () {
+      img.onload = null; // prevent re-triggering on subsequent src swaps
       const trainDisplayW = img.naturalWidth * (TRAIN_H / img.naturalHeight);
 
-      // Start fully hidden behind the name (left of stage's left edge)
       img.style.left       = (-trainDisplayW) + 'px';
       img.style.transform  = 'translate(0,-50%)';
       img.style.transition = '';
 
-      const stageEl    = stage.getBoundingClientRect();
-      const dist = stageEl.width + trainDisplayW;
-      const dur  = dist / SPEED;
+      const stageEl = stage.getBoundingClientRect();
+      const dist    = stageEl.width + trainDisplayW;
+      const dur     = dist / config.speed;
 
       requestAnimationFrame(() => requestAnimationFrame(() => {
         img.style.transition = `transform ${dur}s linear`;
@@ -2136,12 +2183,12 @@ const TRAIN_H    = 34;
         img.remove();
         stage.style.left  = '';
         stage.style.right = '';
-        running = false;
+        currentImg = null;
+        running    = false;
       }, dur * 1000 + 60);
     };
 
-    img.src = TRAINS[trainIdx % TRAINS.length];
-    trainIdx++;
+    img.src = `trains2/train${currentIdx + 1}${suffix}.png`;
   }
 })();
 
